@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0c0c0c">
-<title>movium 📼</title>
+<title>📼</title>
 
 <style>
 :root {
@@ -381,7 +381,7 @@ footer {
   font-size: 12px;
 }
 
-/* Movie popup */
+/* Full-screen video player */
 
 .movie-overlay {
   position: fixed;
@@ -390,7 +390,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 60px 24px 24px;
   background: rgb(1, 1, 1);
   opacity: 0;
   visibility: hidden;
@@ -404,69 +404,54 @@ footer {
   pointer-events: auto;
 }
 
-.overlay-close {
+.player-close {
   position: absolute;
-  top: 23px;
-  right: 28px;
-  width: 42px;
-  height: 42px;
+  top: 14px;
+  right: 22px;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
   border: 0;
-  background: transparent;
+  border-radius: 5px;
+  background: #181818;
   color: white;
   font-size: 30px;
   font-weight: 300;
 }
 
-.drive-popup {
-  width: min(410px, 100%);
-  text-align: center;
+.player-close:hover {
+  background: #303030;
 }
 
-.drive-label {
-  color: #777;
-  font-size: 10px;
-  letter-spacing: 2px;
+.player-container {
+  position: relative;
+  width: min(1200px, 100%);
+  height: min(75vh, 760px);
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.drive-popup h2 {
-  margin: 18px 0 7px;
-  color: white;
-  font-size: 25px;
-  letter-spacing: -.5px;
+.player-container iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
 }
 
-.drive-year {
-  color: #858585;
+.player-loading {
+  position: absolute;
+  z-index: 1;
+  color: #888;
   font-size: 13px;
-  margin-bottom: 25px;
+  pointer-events: none;
 }
 
-.drive-link {
-  display: inline-block;
-  padding: 13px 20px;
-  border-radius: 4px;
-  background: #f2f2f2;
-  color: #111;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 650;
+.player-container.has-video .player-loading {
+  display: none;
 }
-
-.drive-link:hover {
-  background: #ccc;
-}
-
-.drive-unavailable {
-  color: #777;
-  font-size: 13px;
-  padding: 13px 0;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-/* Mobile */
 
 @media (max-width: 1000px) {
   .movie-grid {
@@ -552,6 +537,16 @@ footer {
 
   .section {
     margin-top: 34px;
+  }
+
+  .movie-overlay {
+    padding: 60px 0 0;
+  }
+
+  .player-container {
+    width: 100%;
+    height: 56.25vw;
+    max-height: 75vh;
   }
 }
 
@@ -645,36 +640,17 @@ footer {
   <div class="container">movium. · A library for movie lovers.</div>
 </footer>
 
-<div
-  class="movie-overlay"
-  id="movieOverlay"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="driveMovieTitle"
->
+<!-- Embedded player instead of the old movie-title popup -->
+<div class="movie-overlay" id="movieOverlay">
   <button
-    class="overlay-close"
+    class="player-close"
     id="movieOverlayClose"
-    aria-label="Close movie"
+    aria-label="Close movie player"
   >×</button>
 
-  <div class="drive-popup">
-    <div class="drive-label">MOVIUM / MOVIE</div>
-
-    <h2 id="driveMovieTitle">Movie title</h2>
-    <div class="drive-year" id="driveMovieYear"></div>
-
-    <a
-      class="drive-link"
-      id="driveMovieLink"
-      href="#"
-      target="_blank"
-      rel="noopener noreferrer"
-      hidden
-    >Open movie ↗</a>
-
-    <div class="drive-unavailable" id="driveUnavailable">
-      Movie unavailable
+  <div class="player-container" id="playerContainer">
+    <div class="player-loading" id="playerLoading">
+      Select a movie to play.
     </div>
   </div>
 </div>
@@ -682,20 +658,17 @@ footer {
 <script>
 /*
 ====================================================
-MOVIUM: EASY MOVIE LIBRARY
-====================================================
+MOVIUM MOVIE LIBRARY
 
-To add a movie, copy the movie template at the bottom
-of this list and fill in its details.
+To add a movie, copy the template at the bottom
+of the movies list.
 
-title     = movie name
-year      = release year
-poster    = movie poster image path
-backdrop  = wide image for the featured banner
-drive     = Google Drive share link, or "" if missing
-description = short description for the featured banner
-
-To feature a movie, add its exact title to featuredTitles.
+title       = movie name
+year        = release year
+poster      = TMDB poster path
+backdrop    = TMDB backdrop path
+drive       = Google Drive share URL
+description = short description
 ====================================================
 */
 
@@ -724,7 +697,7 @@ const movies = [
 
   /*
   ==================================================
-  COPY THIS TEMPLATE TO ADD ANOTHER MOVIE
+  MOVIE TEMPLATE — COPY THIS OBJECT TO ADD A MOVIE
 
   ,
   {
@@ -733,16 +706,12 @@ const movies = [
     poster: "/POSTER_IMAGE_PATH.jpg",
     backdrop: "/BACKDROP_IMAGE_PATH.jpg",
     drive: "",
-    description: "Write a short description here."
+    description: "A short description of the movie."
   }
 
-  Remove the /* and * / around your copied movie
-  if you want to use the template above.
   ==================================================
   */
 ];
-
-/* Add the exact movie titles you want featured here. */
 
 const featuredTitles = [
   "Interstellar",
@@ -774,7 +743,7 @@ function backdropURL(movie) {
   return "";
 }
 
-/* Create a movie card */
+/* Movie cards */
 
 function makeCard(movie) {
   const card = document.createElement("article");
@@ -825,7 +794,7 @@ function makeCard(movie) {
   return card;
 }
 
-/* Featured section */
+/* Featured films */
 
 function renderFeatured() {
   $("featuredGrid").replaceChildren();
@@ -841,7 +810,7 @@ function renderFeatured() {
   });
 }
 
-/* A-Z letter buttons */
+/* A-Z filters */
 
 function renderAlphabet() {
   $("alphabet").replaceChildren();
@@ -934,39 +903,68 @@ function setHero(movie) {
   }
 }
 
-/* Movie popup */
+/* Embedded Google Drive player */
 
 function openMovie(movie) {
   currentMovie = movie;
 
-  $("driveMovieTitle").textContent = movie.title;
-  $("driveMovieYear").textContent = `Released in ${movie.year}`;
+  const overlay = $("movieOverlay");
+  const container = $("playerContainer");
 
-  const link = $("driveMovieLink");
-  const unavailable = $("driveUnavailable");
+  // Stop any previously playing movie.
+  container.replaceChildren();
+  container.classList.remove("has-video");
 
-  if (
-    movie.drive &&
-    /^https:\/\/drive\.google\.com\//i.test(movie.drive)
-  ) {
-    link.href = movie.drive;
-    link.hidden = false;
-    unavailable.hidden = true;
+  const loading = document.createElement("div");
+  loading.className = "player-loading";
+  loading.textContent = "Loading movie...";
+
+  container.appendChild(loading);
+
+  // Accept a Google Drive file URL and extract its ID.
+  const driveURL = movie.drive || "";
+
+  const match = driveURL.match(
+    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
+  );
+
+  if (!match) {
+    loading.textContent = "Movie unavailable";
   } else {
-    link.removeAttribute("href");
-    link.hidden = true;
-    unavailable.hidden = false;
-    unavailable.textContent = "Movie unavailable";
+    const iframe = document.createElement("iframe");
+
+    iframe.src =
+      `https://drive.google.com/file/d/${match[1]}/preview`;
+
+    iframe.title = `${movie.title} video player`;
+    iframe.allow =
+      "autoplay; encrypted-media; fullscreen; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+    iframe.addEventListener("load", () => {
+      container.classList.add("has-video");
+    });
+
+    container.appendChild(iframe);
   }
 
-  $("movieOverlay").classList.add("open");
+  overlay.classList.add("open");
   document.body.classList.add("overlay-active");
   $("movieOverlayClose").focus();
 }
 
+/* Close player and stop playback */
+
 function closeMovie() {
   $("movieOverlay").classList.remove("open");
   document.body.classList.remove("overlay-active");
+
+  const container = $("playerContainer");
+
+  // Removing the iframe stops its video.
+  container.replaceChildren();
+  container.classList.remove("has-video");
 }
 
 /* Search */
@@ -1008,15 +1006,9 @@ $("heroDetails").addEventListener("click", () => {
   if (currentMovie) openMovie(currentMovie);
 });
 
-/* Close popup */
+/* Close player */
 
 $("movieOverlayClose").addEventListener("click", closeMovie);
-
-$("movieOverlay").addEventListener("click", event => {
-  if (event.target === $("movieOverlay")) {
-    closeMovie();
-  }
-});
 
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") {
@@ -1024,7 +1016,7 @@ document.addEventListener("keydown", event => {
   }
 });
 
-/* Start the site */
+/* Initialize the site */
 
 renderAlphabet();
 renderFeatured();
