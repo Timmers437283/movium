@@ -2,668 +2,761 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0c0c0c">
-  <title>Movium — Discover Movies</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c0c0c">
+<title>Movium — Discover Movies</title>
+<style>
+:root {
+  --bg: #0c0c0c;
+  --panel: #151515;
+  --border: #262626;
+  --text: #f5f5f5;
+  --muted: #929292;
+}
 
-    body {
-      margin: 0;
-      background: #0c0c0c;
-      color: #f5f5f5;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+* { box-sizing: border-box; }
 
-    button, input {
-      font: inherit;
-    }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
-    button {
-      cursor: pointer;
-    }
+button, input { font: inherit; }
+button { cursor: pointer; }
 
-    .container {
-      width: min(1200px, calc(100% - 40px));
-      margin: auto;
-    }
+.container {
+  width: min(1400px, calc(100% - 64px));
+  margin: auto;
+}
 
-    header {
-      height: 76px;
-      border-bottom: 1px solid #252525;
-    }
+header {
+  height: 74px;
+  border-bottom: 1px solid #202020;
+  position: relative;
+  z-index: 2;
+}
 
-    .nav {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
 
-    .logo {
-      font-size: 27px;
-      font-weight: 750;
-      letter-spacing: -1.4px;
-    }
+.logo {
+  color: white;
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -1.5px;
+  text-decoration: none;
+}
 
-    .logo span {
-      color: #0a84ff;
-    }
+.logo span { color: #858585; }
 
-    .nav-label {
-      color: #929292;
-      font-size: 12px;
-      letter-spacing: 1.5px;
-    }
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
 
-    main {
-      padding: 34px 0 65px;
-    }
+.nav-links a {
+  color: #a3a3a3;
+  text-decoration: none;
+  font-size: 13px;
+}
 
-    .search-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 38px;
-    }
+.nav-links a:hover { color: white; }
 
-    .search-box {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-      background: #151515;
-      border: 1px solid #303030;
-      border-radius: 7px;
-      padding: 0 15px;
-      min-width: 0;
-    }
+.search-icon {
+  border: 0;
+  background: transparent;
+  color: white;
+  font-size: 21px;
+}
 
-    .search-box span {
-      color: #929292;
-      font-size: 20px;
-    }
+main { padding-bottom: 70px; }
 
-    #search {
-      width: 100%;
-      height: 48px;
-      border: 0;
-      outline: none;
-      background: transparent;
-      color: white;
-      font-size: 14px;
-    }
+/* Featured cinematic banner */
 
-    #search::placeholder {
-      color: #858585;
-    }
+.hero {
+  height: clamp(340px, 43vw, 560px);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  isolation: isolate;
+  margin-bottom: 43px;
+}
 
-    .random-button {
-      border: 0;
-      border-radius: 7px;
-      background: #0a84ff;
-      color: white;
-      padding: 0 17px;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  opacity: .83;
+}
 
-    .random-button:hover {
-      background: #0876e5;
-    }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to right, var(--bg) 0%, rgba(12,12,12,.88) 8%, rgba(12,12,12,.35) 42%, transparent 76%),
+    linear-gradient(to left, var(--bg) 0%, transparent 25%),
+    linear-gradient(to top, var(--bg) 0%, rgba(12,12,12,.15) 35%, transparent 75%);
+}
 
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
+.hero-content {
+  padding: 0 0 47px 4px;
+  max-width: 560px;
+}
 
-    h2 {
-      margin: 0;
-      font-size: 21px;
-      letter-spacing: -0.5px;
-    }
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: #c0c0c0;
+  letter-spacing: 2.3px;
+  margin-bottom: 15px;
+}
 
-    .subheading {
-      margin: 7px 0 0;
-      color: #929292;
-      font-size: 13px;
-    }
+.hero h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 65px);
+  line-height: 1.02;
+  letter-spacing: -2.5px;
+  font-weight: 750;
+}
 
-    .featured-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 17px;
-    }
+.hero-meta {
+  color: #d0d0d0;
+  font-size: 14px;
+  margin-top: 15px;
+}
 
-    .movie-grid {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 25px 17px;
-    }
+.hero-description {
+  color: #c1c1c1;
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 420px;
+  margin: 15px 0 23px;
+}
 
-    .movie {
-      min-width: 0;
-      cursor: pointer;
-    }
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-    .poster-wrap {
-      aspect-ratio: 2 / 3;
-      overflow: hidden;
-      border-radius: 6px;
-      background: #191919;
-      border: 1px solid #242424;
-    }
+.play-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 20px;
+  background: white;
+  color: #111;
+  border: 1px solid white;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 700;
+}
 
-    .poster {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 180ms ease;
-    }
+.play-button:hover { background: #dedede; }
 
-    .movie:hover .poster {
-      transform: scale(1.035);
-    }
+.secondary-button {
+  padding: 13px 17px;
+  background: rgba(20,20,20,.65);
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 13px;
+}
 
-    .movie-title {
-      font-size: 13px;
-      font-weight: 600;
-      line-height: 1.45;
-      margin-top: 10px;
-      overflow-wrap: anywhere;
-    }
+.secondary-button:hover { background: #292929; }
 
-    .movie-year {
-      font-size: 12px;
-      color: #929292;
-      margin-top: 4px;
-    }
+.content-section { margin-top: 42px; }
 
-    .featured-section {
-      margin-bottom: 43px;
-    }
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
 
-    .alphabet {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-      margin: 19px 0 26px;
-    }
+.section-heading h2 {
+  font-size: 21px;
+  letter-spacing: -.5px;
+  margin: 0;
+  font-weight: 650;
+}
 
-    .letter {
-      min-width: 31px;
-      height: 32px;
-      padding: 0 8px;
-      background: #171717;
-      border: 1px solid #292929;
-      border-radius: 5px;
-      color: #bdbdbd;
-      font-size: 12px;
-    }
+.section-description {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
 
-    .letter:hover {
-      border-color: #0a84ff;
-      color: white;
-    }
+.count {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
 
-    .letter.active {
-      background: #0a84ff;
-      border-color: #0a84ff;
-      color: white;
-    }
+/* Actual portrait poster cards */
 
-    .results-label {
-      font-size: 12px;
-      color: #929292;
-    }
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 28px 17px;
+}
 
-    .empty {
-      grid-column: 1 / -1;
-      color: #929292;
-      padding: 38px 0;
-      text-align: center;
-      font-size: 14px;
-    }
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 17px;
+}
 
-    footer {
-      border-top: 1px solid #252525;
-      padding: 24px 0;
-      color: #777;
-      font-size: 12px;
-    }
+.movie {
+  min-width: 0;
+  cursor: pointer;
+}
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      place-items: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.82);
-      z-index: 10;
-    }
+.poster-wrap {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #171717;
+  border: 1px solid #252525;
+  border-radius: 4px;
+}
 
-    .modal.open {
-      display: grid;
-    }
+.poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .22s ease, opacity .22s ease;
+}
 
-    .modal-card {
-      position: relative;
-      display: flex;
-      gap: 22px;
-      width: min(480px, 100%);
-      padding: 22px;
-      border: 1px solid #303030;
-      border-radius: 9px;
-      background: #151515;
-    }
+.movie:hover .poster {
+  transform: scale(1.035);
+  opacity: .85;
+}
 
-    .modal-poster {
-      width: 42%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 5px;
-    }
+.movie-title {
+  color: #f2f2f2;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
 
-    .modal-info {
-      padding-top: 20px;
-    }
+.movie-year {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
 
-    .modal-info h2 {
-      font-size: 23px;
-      line-height: 1.3;
-    }
+.alphabet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+}
 
-    .modal-info p {
-      color: #929292;
-      font-size: 14px;
-    }
+.letter {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid #292929;
+  border-radius: 4px;
+  background: #141414;
+  color: #aaa;
+  font-size: 12px;
+}
 
-    .close {
-      position: absolute;
-      right: 12px;
-      top: 10px;
-      background: none;
-      color: white;
-      border: 0;
-      font-size: 23px;
-    }
+.letter:hover, .letter.active {
+  color: #fff;
+  background: #303030;
+  border-color: #555;
+}
 
-    @media (max-width: 900px) {
-      .movie-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
+.search-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
 
-      .featured-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 10px;
-      }
-    }
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  max-width: 480px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #303030;
+  background: #141414;
+  border-radius: 5px;
+}
 
-    @media (max-width: 560px) {
-      .container {
-        width: calc(100% - 28px);
-      }
+.search-box span { color: #888; font-size: 18px; }
 
-      header {
-        height: 65px;
-      }
+#search {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 13px;
+}
 
-      .logo {
-        font-size: 24px;
-      }
+#search::placeholder { color: #777; }
 
-      .nav-label {
-        font-size: 10px;
-      }
+.random-button {
+  height: 44px;
+  padding: 0 15px;
+  border: 1px solid #383838;
+  border-radius: 5px;
+  background: #191919;
+  color: white;
+  font-size: 12px;
+}
 
-      main {
-        padding-top: 23px;
-      }
+.random-button:hover { background: #292929; }
 
-      .search-row {
-        flex-wrap: wrap;
-        margin-bottom: 30px;
-      }
+.empty {
+  grid-column: 1 / -1;
+  padding: 50px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
 
-      .search-box {
-        flex-basis: 100%;
-      }
+footer {
+  border-top: 1px solid #222;
+  padding: 25px 0;
+  color: #777;
+  font-size: 12px;
+}
 
-      .random-button {
-        height: 42px;
-        width: 100%;
-      }
+/* Movie information dialog */
 
-      .featured-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  padding: 20px;
+  background: rgba(0,0,0,.85);
+  place-items: center;
+}
 
-      .movie-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 22px 11px;
-      }
+.modal.open { display: grid; }
 
-      .movie-title {
-        font-size: 12px;
-      }
+.modal-card {
+  display: flex;
+  gap: 22px;
+  position: relative;
+  width: min(500px, 100%);
+  padding: 22px;
+  border: 1px solid #333;
+  border-radius: 7px;
+  background: #141414;
+}
 
-      h2 {
-        font-size: 19px;
-      }
+.modal-poster {
+  width: 42%;
+  max-height: 330px;
+  object-fit: cover;
+  border-radius: 3px;
+}
 
-      .letter {
-        min-width: 29px;
-        padding: 0 6px;
-      }
-    }
-  </style>
+.modal-info { padding-top: 25px; }
+.modal-info h2 { font-size: 23px; line-height: 1.3; }
+.modal-info p { color: #999; font-size: 13px; }
+
+.close {
+  position: absolute;
+  top: 9px;
+  right: 12px;
+  color: white;
+  background: transparent;
+  border: 0;
+  font-size: 23px;
+}
+
+@media (max-width: 1000px) {
+  .movie-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .featured-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .container { width: calc(100% - 40px); }
+}
+
+@media (max-width: 600px) {
+  header { height: 62px; }
+  .container { width: calc(100% - 28px); }
+  .nav-links { gap: 13px; }
+  .nav-links a { font-size: 11px; }
+  .nav-label { display: none; }
+  .logo { font-size: 24px; }
+  .hero { height: 420px; margin-bottom: 34px; }
+  .hero-content { padding-bottom: 30px; }
+  .hero h1 { font-size: 39px; letter-spacing: -1.4px; }
+  .hero-description { font-size: 13px; }
+  .hero::before {
+    background:
+      linear-gradient(to right, rgba(12,12,12,.5), transparent),
+      linear-gradient(to top, var(--bg) 0%, rgba(12,12,12,.45) 55%, transparent 100%);
+  }
+  .movie-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 11px; }
+  .featured-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+  .movie-title { font-size: 12px; }
+  .section-heading h2 { font-size: 19px; }
+  .search-panel { flex-wrap: wrap; }
+  .search-box { max-width: none; flex-basis: 100%; }
+  .random-button { width: 100%; }
+  .content-section { margin-top: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <div class="container nav">
-      <div class="logo">movium<span>.</span></div>
-      <div class="nav-label">YOUR MOVIE LIBRARY</div>
-    </div>
-  </header>
 
-  <main class="container">
-    <div class="search-row">
-      <label class="search-box">
-        <span>⌕</span>
-        <input id="search" type="search"
-          placeholder="Search movies..."
-          autocomplete="off"
-          aria-label="Search movies">
-      </label>
-      <button class="random-button" id="randomButton">
-        ↗ Random movie
-      </button>
-    </div>
+<header>
+  <div class="container nav">
+    <a href="#" class="logo">movium<span>.</span></a>
+    <nav class="nav-links">
+      <a href="#featured">Featured</a>
+      <a href="#library">Movies</a>
+      <button class="search-icon" id="focusSearch" aria-label="Search">⌕</button>
+    </nav>
+  </div>
+</header>
 
-    <section class="featured-section" id="featuredSection">
+<main>
+  <section class="container hero" id="hero">
+    <img class="hero-backdrop" id="heroBackdrop" alt="">
+    <div class="hero-content">
+      <div class="eyebrow">FEATURED FILM</div>
+      <h1 id="heroTitle">Interstellar</h1>
+      <div class="hero-meta" id="heroMeta">2014 · Sci-Fi</div>
+      <p class="hero-description" id="heroDescription">
+        A journey beyond the stars, to the edge of what humanity knows.
+      </p>
+      <div class="hero-actions">
+        <button class="play-button" id="playTrailer">▶ Play trailer</button>
+        <button class="secondary-button" id="heroDetails">More info</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="content-section" id="featured">
       <div class="section-heading">
         <div>
           <h2>Featured films</h2>
-          <p class="subheading">Movies worth discovering.</p>
+          <p class="section-description">A selection worth your time.</p>
         </div>
       </div>
       <div class="featured-grid" id="featuredGrid"></div>
     </section>
 
-    <section>
+    <section class="content-section" id="library">
       <div class="section-heading">
         <div>
-          <h2 id="libraryTitle">Browse movies</h2>
-          <p class="subheading">Explore the collection, A to Z.</p>
+          <h2 id="libraryTitle">Explore movies</h2>
+          <p class="section-description">Find something to watch.</p>
         </div>
-        <span class="results-label" id="resultsCount"></span>
+        <span class="count" id="resultsCount"></span>
+      </div>
+
+      <div class="search-panel">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="search" type="search"
+            placeholder="Search by movie title..."
+            autocomplete="off">
+        </label>
+        <button class="random-button" id="randomButton">↗ Pick a random movie</button>
       </div>
 
       <div class="alphabet" id="alphabet"></div>
       <div class="movie-grid" id="movieGrid"></div>
     </section>
-  </main>
+  </div>
+</main>
 
-  <footer>
-    <div class="container">
-      Movium · Discover your next favorite movie.
-    </div>
-  </footer>
+<footer>
+  <div class="container">movium. <span>· A library for movie lovers.</span></div>
+</footer>
 
-  <div class="modal" id="movieModal" role="dialog"
-    aria-modal="true" aria-label="Movie details">
-    <div class="modal-card">
-      <button class="close" id="closeModal" aria-label="Close">×</button>
-      <img class="modal-poster" id="modalPoster" alt="">
-      <div class="modal-info">
-        <h2 id="modalTitle"></h2>
-        <p id="modalYear"></p>
-      </div>
+<div class="modal" id="movieModal" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <button class="close" id="closeModal" aria-label="Close">×</button>
+    <img class="modal-poster" id="modalPoster" alt="">
+    <div class="modal-info">
+      <h2 id="modalTitle"></h2>
+      <p id="modalYear"></p>
+      <button class="play-button" id="modalTrailer">▶ Play trailer</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const movies = [
-      { title: "A Quiet Place", year: 2018, id: "wrJ1nxD6Yf" },
-      { title: "Avatar", year: 2009, id: "kyeqWdyUXW" },
-      { title: "Barbie", year: 2023, id: "iuFNMS8s0Sk" },
-      { title: "Black Panther", year: 2018, id: "uxzzx7eBaFw" },
-      { title: "Coco", year: 2017, id: "Ga6RYejo6Hk" },
-      { title: "Dune", year: 2021, id: "d5NXSklXo3E" },
-      { title: "Dune: Part Two", year: 2024, id: "Way9Dexny3w" },
-      { title: "Everything Everywhere All at Once", year: 2022, id: "wxN1T1uxQ2g" },
-      { title: "Fight Club", year: 1999, id: "SUXWAEX2jlg" },
-      { title: "Frozen", year: 2013, id: "TbQm5doF_Uc" },
-      { title: "Get Out", year: 2017, id: "DzfpyUB60YY" },
-      { title: "Gladiator", year: 2000, id: "owK1qxDselE" },
-      { title: "Harry Potter and the Philosopher's Stone", year: 2001, id: "VyHV0BRtdxo" },
-      { title: "Inception", year: 2010, id: "YoHD9XEInc0" },
-      { title: "Interstellar", year: 2014, id: "zSWdZVtXT7E" },
-      { title: "Joker", year: 2019, id: "zAGVQLHvwOY" },
-      { title: "John Wick", year: 2014, id: "2AUmvWm5ZDQ" },
-      { title: "Kung Fu Panda", year: 2008, id: "PXi3Mv6KMzY" },
-      { title: "La La Land", year: 2016, id: "0pdqf4P9MB8" },
-      { title: "Logan", year: 2017, id: "Div0iP65aZo" },
-      { title: "Moana", year: 2016, id: "LKFuXETZUsI" },
-      { title: "Oppenheimer", year: 2023, id: "uYPbbksJxIg" },
-      { title: "Parasite", year: 2019, id: "5xH0HfJHsaY" },
-      { title: "Pulp Fiction", year: 1994, id: "s7EdQ4FqbhY" },
-      { title: "Shrek", year: 2001, id: "CwXOrWvPBPk" },
-      { title: "Spider-Man: No Way Home", year: 2021, id: "JfVOs4VSpmA" },
-      { title: "The Batman", year: 2022, id: "mqqft2x_Aa4" },
-      { title: "The Dark Knight", year: 2008, id: "EXeTwQWrcwY" },
-      { title: "The Incredibles", year: 2004, id: "sFv7Gqv9M" },
-      { title: "The Lion King", year: 1994, id: "lFzVJEksoDY" },
-      { title: "The Matrix", year: 1999, id: "vKQi3bBA1y8" },
-      { title: "The Shawshank Redemption", year: 1994, id: "6hB3S9bIaco" },
-      { title: "Titanic", year: 1997, id: "kVrqfYjkTdQ" },
-      { title: "Top Gun: Maverick", year: 2022, id: "giXco2jaZ_4" },
-      { title: "Up", year: 2009, id: "ORFWdXl_zJ4" },
-      { title: "WALL-E", year: 2008, id: "alIq_wG9FNk" },
-      { title: "Whiplash", year: 2014, id: "7d_jQycdQGo" },
-      { title: "Your Name", year: 2016, id: "xU47nhruN-Q" },
-      { title: "Zootopia", year: 2016, id: "jWM0ct-OLsM" }
-    ];
+<script>
+/*
+  Movium uses TMDB image paths for tall posters and wide backdrops.
+  The current sample catalog has real TMDB image paths.
+  The full catalog can be connected to the TMDB API later.
+*/
 
-    // Featured films are selected here.
-    const featuredTitles = [
-      "Interstellar",
-      "The Batman",
-      "Oppenheimer",
-      "Inception",
-      "Spider-Man: No Way Home"
-    ];
+const IMAGE = "https://image.tmdb.org/t/p/";
+const POSTER_SIZE = "w500";
+const BACKDROP_SIZE = "w1280";
 
-    const poster = movie =>
-      `https://img.youtube.com/vi/${movie.id}/mqdefault.jpg`;
+const movies = [
+  { title:"A Quiet Place", year:2018, poster:"nAU74GmpUk7t5iklEp3bufwDq4n.jpg", backdrop:"roYyPiQDQKmIKUEhO912693tSja.jpg", id:447332 },
+  { title:"Avatar", year:2009, poster:"kyeqWdyUXW608qlYkRqosgbbJyK.jpg", backdrop:"vL5LR6WdxWPjLPFRLe133jXWsh5.jpg", id:19995 },
+  { title:"Barbie", year:2023, poster:"iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg", backdrop:"ctMserH8g2SeOAnCw5gFjdQF8mo.jpg", id:346698 },
+  { title:"Black Panther", year:2018, poster:"uxzzxijgPIY7slzFvMotPv8wjKA.jpg", backdrop:"b6ZJZHUdMEFECvGiDpJjlfUWela.jpg", id:284054 },
+  { title:"Coco", year:2017, poster:"gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg", backdrop:"askg3SMvhqEl4OL52YuvdtY40Yb.jpg", id:354912 },
+  { title:"Dune", year:2021, poster:"d5NXSklXo0qyIYkgV94XAgMIckC.jpg", backdrop:"jYEW5xZkZk2WTrdbMGAPFuBqbDc.jpg", id:438631 },
+  { title:"Dune: Part Two", year:2024, poster:"1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg", backdrop:"xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg", id:693134 },
+  { title:"Everything Everywhere All at Once", year:2022, poster:"w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg", backdrop:"ss0Os3uWJfQAENILHZUdX8Tt1OC.jpg", id:545611 },
+  { title:"Fight Club", year:1999, poster:"pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg", backdrop:"hZkgoQYus5vegHoetLkCJzb17zJ.jpg", id:550 },
+  { title:"Frozen", year:2013, poster:"kgwjIb2JDHRhNk13lmSxiClFjVk.jpg", backdrop:"bHarw8xrmQeqf3t8HpuMY7zoK4x.jpg", id:109445 },
+  { title:"Get Out", year:2017, poster:"tFXcEccSQMf3lfhfXKSU9iRBpa3.jpg", backdrop:"mE4z2w4W7raU8D6h0aW5X6qjW.jpg", id:419430 },
+  { title:"Gladiator", year:2000, poster:"ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg", backdrop:"hND7xAaxxBgaIspp9iMsaEXOSTz.jpg", id:98 },
+  { title:"Harry Potter and the Philosopher's Stone", year:2001, poster:"wuMc08IPKEatf9rnMNXvIDxqP4W.jpg", backdrop:"hziiv14OpD73u9gAak4XDDfBKa2.jpg", id:671 },
+  { title:"Inception", year:2010, poster:"oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg", backdrop:"s3TBrRGB1iav7gFOCNx3H31MoES.jpg", id:27205 },
+  { title:"Interstellar", year:2014, poster:"gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", backdrop:"xJHokMbljvjADYdit5fK5VQsXEG.jpg", id:157336, trailer:"zSWdZVtXT7E", description:"Humanity's future lies beyond the stars. One crew ventures through a wormhole in search of a new home." },
+  { title:"Joker", year:2019, poster:"udDclJoHjfjb8Ekgsd4FDteOkCU.jpg", backdrop:"n6bUvigpRFqSwmPp1m2YADdbRBc.jpg", id:475557 },
+  { title:"John Wick", year:2014, poster:"fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg", backdrop:"umC04Cozevu8nn3JTDJ1pc7PVTn.jpg", id:245891 },
+  { title:"Kung Fu Panda", year:2008, poster:"wWt4JYXTg5Wr3xBW2phBrMKgp3x.jpg", backdrop:"2P0n1JkGq0w5jQX5j6W6nF5m.jpg", id:9502 },
+  { title:"La La Land", year:2016, poster:"uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg", backdrop:"qJeU7KM4nT2C1WpOrwPcSDGFUWE.jpg", id:313369 },
+  { title:"Logan", year:2017, poster:"fnbjcRDYn6YviCcePDnGdyAkYsB.jpg", backdrop:"9X7YweCJw3q8Mcf6Jf0w5oX2oYJ.jpg", id:263115 },
+  { title:"Moana", year:2016, poster:"9tzN8sPbyod2dsa0lwuvrwBDWra.jpg", backdrop:"7ABsaBkO1jA2psC8Hy4IDhkID4h.jpg", id:277834 },
+  { title:"Oppenheimer", year:2023, poster:"ptpr0kGAckfQkJeJIt8st5dglvd.jpg", backdrop:"fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg", id:872585 },
+  { title:"Parasite", year:2019, poster:"7IiTTgloJzvGI1TAYymCfbfl3vT.jpg", backdrop:"TU9NIjwzjoKPwQHoHshkFcQUCG.jpg", id:496243 },
+  { title:"Pulp Fiction", year:1994, poster:"vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg", backdrop:"suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg", id:680 },
+  { title:"Shrek", year:2001, poster:"iB64vpL3dIObOtMZgX3RqdVdQDc.jpg", backdrop:"lF9t1Wnq8YhFz1xFjv4K1uKzY3Y.jpg", id:808 },
+  { title:"Spider-Man: No Way Home", year:2021, poster:"1g0dhYtq4irTY1GPXvft6k4YLjm.jpg", backdrop:"14QbnygCuTO0vl7CAFmPf1fgZfV.jpg", id:634649 },
+  { title:"The Batman", year:2022, poster:"74xTEgt7R36Fpooo50r9T25onhq.jpg", backdrop:"b0PlSFdDwbyK0cf5RxwDpaOJQvQ.jpg", id:414906 },
+  { title:"The Dark Knight", year:2008, poster:"qJ2tW6WMUDux911r6m7haRef0WH.jpg", backdrop:"hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg", id:155 },
+  { title:"The Incredibles", year:2004, poster:"2LqaLgk4Z226KkgPJuiOQ58wvrm.jpg", backdrop:"rrv0Y6c0B8M6kG1a1Q4F7v1.jpg", id:9806 },
+  { title:"The Lion King", year:1994, poster:"sKCr78MXSLixwmZ8DyJLrpMsd15.jpg", backdrop:"wXsQvli6tWqja51pYxXNG1LFIGV.jpg", id:8587 },
+  { title:"The Matrix", year:1999, poster:"f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg", backdrop:"icmmSD4vTTDKOq2vvdulafOGw93.jpg", id:603 },
+  { title:"The Shawshank Redemption", year:1994, poster:"9cjIGR8ymT8ePNF9Tn4DkD6.jpg", backdrop:"kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg", id:278 },
+  { title:"Titanic", year:1997, poster:"9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg", backdrop:"rzdPqYx7Um4FUZeD8wpXqjAUcEm.jpg", id:597 },
+  { title:"Top Gun: Maverick", year:2022, poster:"62HCnUTziyWcpDaBO2i1DX17ljH.jpg", backdrop:"AaV1YIdWKnjAIAOe8UUKBFm327v.jpg", id:361743 },
+  { title:"Up", year:2009, poster:"vpbaStTMt8qqXaEgnOR2EE4DNJk.jpg", backdrop:"mFvoEwSfLqbcWwFsDjQebn9bzFe.jpg", id:14160 },
+  { title:"WALL-E", year:2008, poster:"hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg", backdrop:"2P0n1JkGq0w5jQX5j6W6nF5m.jpg", id:10681 },
+  { title:"Whiplash", year:2014, poster:"7fn624j5lj3xTme2SgiLCeuedmO.jpg", backdrop:"6bbZ6XyvgfjhQwbplnUh1LSj1ky.jpg", id:244786 },
+  { title:"Your Name", year:2016, poster:"q719jXXEzOoYaps6babgKnONONX.jpg", backdrop:"8GJsy7w7frGquw1cy9jasog7p2Z.jpg", id:372058 },
+  { title:"Zootopia", year:2016, poster:"hlK0e0wAQ3VLuJcsfIYPvb4JVud.jpg", backdrop:"mhdeE1yShHTaDbJVdWyTlzFvNkr.jpg", id:269149 }
+];
 
-    // Replace these thumbnail URLs with movie poster URLs
-    // from a movie database when connecting the full catalog.
+const featuredTitles = [
+  "Interstellar", "The Batman", "Oppenheimer",
+  "Inception", "Spider-Man: No Way Home"
+];
 
-    const letters = [
-      "All", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    ];
+const letters = ["All", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+const $ = id => document.getElementById(id);
+let selectedLetter = "All";
+let currentMovie = null;
 
-    const searchInput = document.getElementById("search");
-    const movieGrid = document.getElementById("movieGrid");
-    const featuredGrid = document.getElementById("featuredGrid");
-    const alphabet = document.getElementById("alphabet");
-    const resultsCount = document.getElementById("resultsCount");
-    const libraryTitle = document.getElementById("libraryTitle");
-    const featuredSection = document.getElementById("featuredSection");
-    const movieModal = document.getElementById("movieModal");
+function posterURL(movie) {
+  return movie.poster ? IMAGE + POSTER_SIZE + movie.poster : "";
+}
 
-    let selectedLetter = "All";
+function backdropURL(movie) {
+  return movie.backdrop ? IMAGE + BACKDROP_SIZE + movie.backdrop : "";
+}
 
-    function createMovieCard(movie) {
-      const card = document.createElement("article");
-      card.className = "movie";
-      card.tabIndex = 0;
-      card.setAttribute("aria-label", `${movie.title}, ${movie.year}`);
+function makeCard(movie) {
+  const card = document.createElement("article");
+  card.className = "movie";
+  card.tabIndex = 0;
 
-      const wrap = document.createElement("div");
-      wrap.className = "poster-wrap";
+  const wrap = document.createElement("div");
+  wrap.className = "poster-wrap";
 
-      const img = document.createElement("img");
-      img.className = "poster";
-      img.src = poster(movie);
-      img.alt = `${movie.title} poster`;
-      img.loading = "lazy";
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = "https://placehold.co/400x600/191919/ffffff?text=Movium";
-      };
+  const img = document.createElement("img");
+  img.className = "poster";
+  img.src = posterURL(movie);
+  img.alt = movie.title + " poster";
+  img.loading = "lazy";
+  img.onerror = () => {
+    img.onerror = null;
+    img.src = "https://placehold.co/500x750/171717/aaaaaa?text=Poster+Unavailable";
+  };
 
-      const title = document.createElement("div");
-      title.className = "movie-title";
-      title.textContent = movie.title;
+  const title = document.createElement("div");
+  title.className = "movie-title";
+  title.textContent = movie.title;
 
-      const year = document.createElement("div");
-      year.className = "movie-year";
-      year.textContent = movie.year;
+  const year = document.createElement("div");
+  year.className = "movie-year";
+  year.textContent = movie.year;
 
-      wrap.appendChild(img);
-      card.append(wrap, title, year);
-
-      card.addEventListener("click", () => openMovie(movie));
-      card.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openMovie(movie);
-        }
-      });
-
-      return card;
+  wrap.appendChild(img);
+  card.append(wrap, title, year);
+  card.addEventListener("click", () => openMovie(movie));
+  card.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openMovie(movie);
     }
+  });
+  return card;
+}
 
-    function renderAlphabet() {
-      alphabet.replaceChildren();
+function renderFeatured() {
+  $("featuredGrid").replaceChildren();
+  featuredTitles.forEach(title => {
+    const movie = movies.find(m => m.title === title);
+    if (movie) $("featuredGrid").appendChild(makeCard(movie));
+  });
+}
 
-      letters.forEach(letter => {
-        const button = document.createElement("button");
-        button.className =
-          "letter" + (selectedLetter === letter ? " active" : "");
-        button.textContent = letter;
-        button.setAttribute("aria-pressed", selectedLetter === letter);
-
-        button.addEventListener("click", () => {
-          selectedLetter = letter;
-          renderAlphabet();
-          renderMovies();
-        });
-
-        alphabet.appendChild(button);
-      });
-    }
-
-    function renderFeatured() {
-      featuredGrid.replaceChildren();
-
-      const featured = featuredTitles
-        .map(title => movies.find(movie => movie.title === title))
-        .filter(Boolean);
-
-      featured.forEach(movie => {
-        featuredGrid.appendChild(createMovieCard(movie));
-      });
-    }
-
-    function renderMovies() {
-      const query = searchInput.value.trim().toLowerCase();
-
-      const filtered = movies
-        .filter(movie => movie.title.toLowerCase().includes(query))
-        .filter(movie =>
-          selectedLetter === "All" ||
-          movie.title.toUpperCase().startsWith(selectedLetter)
-        )
-        .sort((a, b) =>
-          a.title.localeCompare(b.title, undefined, {
-            sensitivity: "base"
-          })
-        );
-
-      movieGrid.replaceChildren();
-      libraryTitle.textContent = query
-        ? "Search results"
-        : selectedLetter === "All"
-          ? "Browse movies"
-          : `Movies beginning with ${selectedLetter}`;
-
-      resultsCount.textContent = `${filtered.length} movies`;
-
-      if (filtered.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "No movies found. Try another search.";
-        movieGrid.appendChild(empty);
-        return;
-      }
-
-      filtered.forEach(movie => {
-        movieGrid.appendChild(createMovieCard(movie));
-      });
-    }
-
-    function openMovie(movie) {
-      document.getElementById("modalPoster").src = poster(movie);
-      document.getElementById("modalPoster").alt = movie.title;
-      document.getElementById("modalTitle").textContent = movie.title;
-      document.getElementById("modalYear").textContent =
-        `Released in ${movie.year}`;
-      movieModal.classList.add("open");
-      document.getElementById("closeModal").focus();
-    }
-
-    function closeMovie() {
-      movieModal.classList.remove("open");
-    }
-
-    searchInput.addEventListener("input", () => {
-      selectedLetter = "All";
+function renderAlphabet() {
+  $("alphabet").replaceChildren();
+  letters.forEach(letter => {
+    const button = document.createElement("button");
+    button.className = "letter" + (selectedLetter === letter ? " active" : "");
+    button.textContent = letter;
+    button.setAttribute("aria-pressed", selectedLetter === letter);
+    button.addEventListener("click", () => {
+      selectedLetter = letter;
       renderAlphabet();
       renderMovies();
-      featuredSection.style.display =
-        searchInput.value.trim() ? "none" : "";
     });
+    $("alphabet").appendChild(button);
+  });
+}
 
-    document.getElementById("randomButton").addEventListener("click", () => {
-      const query = searchInput.value.trim().toLowerCase();
+function renderMovies() {
+  const query = $("search").value.trim().toLowerCase();
+  const filtered = movies
+    .filter(m => m.title.toLowerCase().includes(query))
+    .filter(m => selectedLetter === "All" ||
+      m.title.toUpperCase().startsWith(selectedLetter))
+    .sort((a, b) => a.title.localeCompare(b.title));
 
-      const available = movies.filter(movie =>
-        movie.title.toLowerCase().includes(query) &&
-        (selectedLetter === "All" ||
-          movie.title.toUpperCase().startsWith(selectedLetter))
-      );
+  $("movieGrid").replaceChildren();
+  $("libraryTitle").textContent = query ? "Search results" :
+    selectedLetter === "All" ? "Explore movies" :
+    `Movies starting with ${selectedLetter}`;
+  $("resultsCount").textContent = `${filtered.length} movies`;
 
-      if (available.length === 0) {
-        alert("No movies match your current filters.");
-        return;
-      }
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No movies found. Try another search.";
+    $("movieGrid").appendChild(empty);
+    return;
+  }
 
-      const movie = available[Math.floor(Math.random() * available.length)];
-      openMovie(movie);
-    });
+  filtered.forEach(movie => $("movieGrid").appendChild(makeCard(movie)));
+}
 
-    document.getElementById("closeModal").addEventListener("click", closeMovie);
+function setHero(movie) {
+  $("heroTitle").textContent = movie.title;
+  $("heroMeta").textContent = `${movie.year} · Featured film`;
+  $("heroDescription").textContent = movie.description ||
+    `Discover ${movie.title}, released in ${movie.year}. Explore the film on Movium.`;
 
-    movieModal.addEventListener("click", event => {
-      if (event.target === movieModal) closeMovie();
-    });
+  const backdrop = $("heroBackdrop");
+  backdrop.src = backdropURL(movie);
+  backdrop.alt = "";
 
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape") closeMovie();
-    });
+  backdrop.onerror = () => {
+    backdrop.onerror = null;
+    backdrop.style.display = "none";
+  };
 
-    renderAlphabet();
-    renderFeatured();
-    renderMovies();
-  </script>
+  backdrop.style.display = "";
+  currentMovie = movie;
+}
+
+function openMovie(movie) {
+  currentMovie = movie;
+  $("modalPoster").src = posterURL(movie);
+  $("modalPoster").alt = movie.title + " poster";
+  $("modalTitle").textContent = movie.title;
+  $("modalYear").textContent = `Released in ${movie.year}`;
+  $("movieModal").classList.add("open");
+}
+
+function closeMovie() {
+  $("movieModal").classList.remove("open");
+}
+
+function playTrailer(movie) {
+  if (movie && movie.id) {
+    window.open(
+      `https://www.youtube.com/results?search_query=${encodeURIComponent(movie.title + " " + movie.year + " official trailer")}`,
+      "_blank", "noopener,noreferrer"
+    );
+  }
+}
+
+$("search").addEventListener("input", () => {
+  selectedLetter = "All";
+  renderAlphabet();
+  renderMovies();
+});
+
+$("randomButton").addEventListener("click", () => {
+  const query = $("search").value.trim().toLowerCase();
+  const candidates = movies.filter(m =>
+    m.title.toLowerCase().includes(query) &&
+    (selectedLetter === "All" ||
+      m.title.toUpperCase().startsWith(selectedLetter))
+  );
+
+  if (!candidates.length) return;
+  openMovie(candidates[Math.floor(Math.random() * candidates.length)]);
+});
+
+$("focusSearch").addEventListener("click", () => {
+  $("search").focus();
+  $("library").scrollIntoView({ behavior: "smooth" });
+});
+
+$("playTrailer").addEventListener("click", () => playTrailer(currentMovie));
+$("heroDetails").addEventListener("click", () => openMovie(currentMovie));
+$("modalTrailer").addEventListener("click", () => playTrailer(currentMovie));
+$("closeModal").addEventListener("click", closeMovie);
+
+$("movieModal").addEventListener("click", e => {
+  if (e.target === $("movieModal")) closeMovie();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeMovie();
+});
+
+renderAlphabet();
+renderFeatured();
+renderMovies();
+setHero(movies.find(m => m.title === "Interstellar"));
+</script>
 </body>
 </html>
