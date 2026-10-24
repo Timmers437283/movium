@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +18,6 @@
 }
 
 * { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -29,7 +29,6 @@ body {
 }
 
 body.player-open { overflow: hidden; }
-
 button, input { font: inherit; }
 button { cursor: pointer; }
 
@@ -322,8 +321,6 @@ footer {
   text-align: center;
 }
 
-/* Movie player: true black background */
-
 .player-overlay {
   position: fixed;
   z-index: 100;
@@ -491,10 +488,7 @@ footer {
   }
 
   .logo { font-size: 24px; }
-
-  .nav-right {
-    font-size: 11px;
-  }
+  .nav-right { font-size: 11px; }
 
   .search-wrap {
     grid-column: 1 / -1;
@@ -503,13 +497,9 @@ footer {
   }
 
   main { width: calc(100% - 28px); }
-
   .hero { height: 430px; }
-
   .hero-content { padding-bottom: 30px; }
-
   .hero h1 { font-size: 39px; }
-
   .hero-description { font-size: 13px; }
 
   .hero::after {
@@ -524,13 +514,9 @@ footer {
   }
 
   .section { margin-top: 31px; }
-
   .section-head h2 { font-size: 19px; }
-
   .player-topbar { padding: 0 12px; }
-
   .player-brand { font-size: 18px; }
-
   .player-control { padding: 8px 9px; }
 
   .player-stage {
@@ -589,6 +575,7 @@ footer {
   </section>
 
   <div id="collections"></div>
+
   <section class="section" id="searchResults" hidden>
     <div class="section-head">
       <div>
@@ -637,11 +624,13 @@ footer {
 
 <script>
 const TMDB = "https://image.tmdb.org/t/p/";
+
 const movies = [
   {
     title: "Spider-Man: Brand New Day",
     year: 2026,
     poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkqVc52eej74emXxh0Z1IYzAPHSvkyrs_nROQQZdyQoNcJIBrEEnetW0HCRocnYR7GJyHRw&s=10",
     backdrop: "",
     category: ["Superheroes", "Featured"],
     story: "Peter Parker faces a new chapter as Spider-Man. Add a verified synopsis when official plot details are available.",
@@ -652,6 +641,7 @@ const movies = [
     title: "Coyote vs. Acme",
     year: 2026,
     poster: "",
+    customPoster: "https://m.media-amazon.com/images/M/MV5BMDg5NDFkNTctZWE2ZC00MDYzLThlYjItZTljZDY3NTcwNjA3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
     backdrop: "",
     category: ["Comedy", "Animation"],
     story: "Wile E. Coyote takes on the Acme Corporation in a comedy inspired by the classic Looney Tunes characters.",
@@ -662,6 +652,7 @@ const movies = [
     title: "Toy Story 5",
     year: 2026,
     poster: "",
+    customPoster: "https://static0.cbrimages.com/wordpress/wp-content/uploads/sharedimages/2026/06/toy-story-5-poster-1.jpg?q=49&fit=contain&w=480&dpr=2",
     backdrop: "",
     category: ["Animation", "Family"],
     story: "Woody, Buzz, and the gang face a new adventure as toys navigate a world increasingly shaped by technology.",
@@ -672,6 +663,7 @@ const movies = [
     title: "The Odyssey",
     year: 2026,
     poster: "",
+    customPoster: "https://m.media-amazon.com/images/M/MV5BNTcyNmJlZmQtNDUwYy00NDBjLTg1NGQtYTY2Y2UxMWM3NmI1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
     backdrop: "",
     category: ["Adventure", "Featured"],
     story: "An epic adaptation of Homer's ancient tale follows Odysseus on his long and dangerous journey home after the Trojan War.",
@@ -682,6 +674,7 @@ const movies = [
     title: "A Bug's Life",
     year: 1998,
     poster: "/Ah3J9OJVc2CNCuH2zMydXy9fmIC.jpg",
+    customPoster: "",
     backdrop: "",
     category: ["Animation", "Family"],
     story: "An inventive ant recruits a group of circus bugs to help defend his colony against a gang of grasshoppers.",
@@ -692,6 +685,7 @@ const movies = [
     title: "A Charlie Brown Christmas",
     year: 1965,
     poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHjR1wzln0ISk_81XnLlWOciYxTKs8z4cGQfmYOF0kRASl2Q5iLH7YS-TokThbjLWt_vTg&s=10",
     backdrop: "",
     category: ["Holiday Favorites", "Animation", "Family"],
     story: "Charlie Brown searches for the meaning of Christmas while directing a holiday play with his friends.",
@@ -702,6 +696,7 @@ const movies = [
     title: "A Goofy Movie",
     year: 1995,
     poster: "",
+    customPoster: "https://m.media-amazon.com/images/M/MV5BY2Q0OTFmMWMtMjEyNC00YWE3LTg1MGEtM2JmZGFlM2E1YWMzXkEyXkFqcGc@._V1_.jpg",
     backdrop: "",
     category: ["Animation", "Family"],
     story: "Goofy takes his son Max on a road trip, hoping to reconnect while Max has plans of his own.",
@@ -711,8 +706,9 @@ const movies = [
   {
     title: "Ant-Man and the Wasp: Quantumania",
     year: 2023,
-    poster: "",
-    backdrop: "",
+    poster: "/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg",
+    customPoster: "",
+    backdrop: "/m8JTwHFwX7I7JY5fPe4SjqejWag.jpg",
     category: ["Superheroes", "Marvel"],
     story: "Scott Lang and his family explore the Quantum Realm and encounter a powerful new threat.",
     cast: "Paul Rudd, Evangeline Lilly, Jonathan Majors, Kathryn Newton",
@@ -722,6 +718,7 @@ const movies = [
     title: "Avengers: Endgame",
     year: 2019,
     poster: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+    customPoster: "",
     backdrop: "",
     category: ["Avengers", "Superheroes", "Marvel"],
     story: "The surviving Avengers work together to reverse the devastating consequences of Thanos's actions.",
@@ -732,6 +729,7 @@ const movies = [
     title: "Avengers: Infinity War",
     year: 2018,
     poster: "/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+    customPoster: "",
     backdrop: "",
     category: ["Avengers", "Superheroes", "Marvel"],
     story: "The Avengers and their allies face a race against time to stop Thanos from collecting the Infinity Stones.",
@@ -742,6 +740,7 @@ const movies = [
     title: "Interstellar",
     year: 2014,
     poster: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    customPoster: "",
     backdrop: "/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
     category: ["Science Fiction", "Featured"],
     story: "A team of explorers travels beyond this galaxy to discover whether mankind has a future among the stars.",
@@ -752,6 +751,7 @@ const movies = [
     title: "Whiplash",
     year: 2014,
     poster: "/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
+    customPoster: "",
     backdrop: "/6bbZ6XyvgfjhQwbplnUh1LSj1ky.jpg",
     category: ["Drama", "Featured"],
     story: "A determined young drummer enters a demanding music conservatory, where an uncompromising instructor pushes him to his limits.",
@@ -772,7 +772,24 @@ const collections = [
 const $ = id => document.getElementById(id);
 let currentMovie = movies.find(movie => movie.title === "Interstellar") || movies[0];
 
+/*
+  CUSTOM POSTER URL SUPPORT
+
+  Paste any direct image URL into customPoster for a movie.
+
+  Example:
+  customPoster: "https://example.com/poster.jpg"
+
+  A direct image URL is required. A link to an IMDb movie page
+  or another webpage is not itself an image URL.
+*/
 function posterURL(movie) {
+  const customURL = (movie.customPoster || "").trim();
+
+  if (customURL) {
+    return customURL;
+  }
+
   return movie.poster
     ? TMDB + "w500" + movie.poster
     : "";
@@ -786,6 +803,15 @@ function backdropURL(movie) {
 
 function setText(id, value) {
   $(id).textContent = value || "";
+}
+
+function addPosterFallback(wrap, movie) {
+  if (wrap.querySelector(".poster-fallback")) return;
+
+  const fallback = document.createElement("div");
+  fallback.className = "poster-fallback";
+  fallback.textContent = movie.title;
+  wrap.appendChild(fallback);
 }
 
 function createCard(movie) {
@@ -806,19 +832,16 @@ function createCard(movie) {
     image.src = imageURL;
     image.alt = `${movie.title} poster`;
     image.loading = "lazy";
+    image.referrerPolicy = "no-referrer";
+
     image.onerror = () => {
       image.remove();
-      const fallback = document.createElement("div");
-      fallback.className = "poster-fallback";
-      fallback.textContent = movie.title;
-      wrap.appendChild(fallback);
+      addPosterFallback(wrap, movie);
     };
+
     wrap.appendChild(image);
   } else {
-    const fallback = document.createElement("div");
-    fallback.className = "poster-fallback";
-    fallback.textContent = movie.title;
-    wrap.appendChild(fallback);
+    addPosterFallback(wrap, movie);
   }
 
   const title = document.createElement("div");
@@ -831,6 +854,7 @@ function createCard(movie) {
 
   card.append(wrap, title, year);
   card.addEventListener("click", () => openMovie(movie));
+
   card.addEventListener("keydown", event => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -893,6 +917,8 @@ function setHero(movie) {
   const backdrop = $("heroBackdrop");
   const url = backdropURL(movie);
 
+  backdrop.onerror = null;
+
   if (url) {
     backdrop.src = url;
     backdrop.style.display = "block";
@@ -900,6 +926,7 @@ function setHero(movie) {
       backdrop.style.display = "none";
     };
   } else {
+    backdrop.removeAttribute("src");
     backdrop.style.display = "none";
   }
 }
@@ -913,9 +940,17 @@ function openMovie(movie) {
   setText("detailCast", movie.cast);
 
   const poster = $("detailPoster");
-  if (posterURL(movie)) {
-    poster.src = posterURL(movie);
+  poster.onerror = null;
+
+  const imageURL = posterURL(movie);
+
+  if (imageURL) {
+    poster.src = imageURL;
     poster.style.display = "block";
+    poster.onerror = () => {
+      poster.removeAttribute("src");
+      poster.style.display = "none";
+    };
   } else {
     poster.removeAttribute("src");
     poster.style.display = "none";
@@ -943,7 +978,10 @@ function openMovie(movie) {
     stage.appendChild(iframe);
 
     message.textContent = "If playback doesn't load, check the video's sharing settings.";
-  } else if (/^https?:\/\//i.test(driveURL) && /\.(mp4|webm|ogg)(\?.*)?$/i.test(driveURL)) {
+  } else if (
+    /^https?:\/\//i.test(driveURL) &&
+    /\.(mp4|webm|ogg)(\?.*)?$/i.test(driveURL)
+  ) {
     const video = document.createElement("video");
     video.src = driveURL;
     video.controls = true;
@@ -959,8 +997,12 @@ function openMovie(movie) {
   stage.appendChild(message);
 
   const nativeVideo = $("nativeVideo");
+
   if (nativeVideo) {
-    nativeVideo.addEventListener("loadedmetadata", () => message.classList.add("hidden"));
+    nativeVideo.addEventListener("loadedmetadata", () => {
+      message.classList.add("hidden");
+    });
+
     nativeVideo.addEventListener("error", () => {
       message.textContent = "This video could not be loaded. Check the URL and permissions.";
       message.classList.remove("hidden");
@@ -1024,6 +1066,7 @@ $("search").addEventListener("input", () => {
   const query = $("search").value.trim().toLowerCase();
   const resultsSection = $("searchResults");
   const resultsRow = $("resultRow");
+
   resultsRow.replaceChildren();
 
   if (!query) {
@@ -1041,7 +1084,10 @@ $("search").addEventListener("input", () => {
     movie.cast.toLowerCase().includes(query)
   );
 
-  setText("resultCount", `${results.length} ${results.length === 1 ? "movie" : "movies"}`);
+  setText(
+    "resultCount",
+    `${results.length} ${results.length === 1 ? "movie" : "movies"}`
+  );
 
   if (!results.length) {
     const empty = document.createElement("div");
