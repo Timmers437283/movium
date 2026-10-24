@@ -10,15 +10,17 @@
 <style>
 :root {
   --bg: #0c0c0c;
-  --panel: #151515;
-  --border: #282828;
   --white: #f5f5f5;
   --gray: #929292;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -28,15 +30,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-body.overlay-active { overflow: hidden; }
+body.overlay-active {
+  overflow: hidden;
+}
 
-button, input { font: inherit; }
-button { cursor: pointer; }
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
 
 .container {
   width: min(1400px, calc(100% - 64px));
   margin: auto;
 }
+
+/* Navigation */
 
 header {
   height: 72px;
@@ -58,7 +69,9 @@ header {
   text-decoration: none;
 }
 
-.logo span { color: #888; }
+.logo span {
+  color: #888;
+}
 
 .nav-links {
   display: flex;
@@ -72,11 +85,15 @@ header {
   text-decoration: none;
 }
 
-.nav-links a:hover { color: white; }
-
-main { padding-bottom: 65px; }
+.nav-links a:hover {
+  color: white;
+}
 
 /* Featured movie */
+
+main {
+  padding-bottom: 65px;
+}
 
 .hero {
   height: clamp(350px, 43vw, 550px);
@@ -144,9 +161,13 @@ main { padding-bottom: 65px; }
   line-height: 1.7;
 }
 
-.hero-actions { display: flex; gap: 10px; }
+.hero-actions {
+  display: flex;
+  gap: 10px;
+}
 
-.play-button, .secondary-button {
+.play-button,
+.secondary-button {
   border-radius: 5px;
   padding: 13px 18px;
   font-size: 13px;
@@ -159,12 +180,18 @@ main { padding-bottom: 65px; }
   border: 1px solid white;
 }
 
-.play-button:hover { background: #ddd; }
+.play-button:hover {
+  background: #ddd;
+}
 
 .secondary-button {
   background: #191919;
   border: 1px solid #444;
   color: white;
+}
+
+.secondary-button:hover {
+  background: #292929;
 }
 
 /* Search */
@@ -204,7 +231,9 @@ main { padding-bottom: 65px; }
   font-size: 13px;
 }
 
-#search::placeholder { color: #777; }
+#search::placeholder {
+  color: #777;
+}
 
 .random-button {
   height: 44px;
@@ -216,11 +245,15 @@ main { padding-bottom: 65px; }
   font-size: 12px;
 }
 
-.random-button:hover { background: #292929; }
+.random-button:hover {
+  background: #292929;
+}
 
-/* Sections and posters */
+/* Movie sections */
 
-.section { margin-top: 42px; }
+.section {
+  margin-top: 42px;
+}
 
 .section-heading {
   display: flex;
@@ -250,7 +283,7 @@ main { padding-bottom: 65px; }
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 190px));
   gap: 17px;
 }
 
@@ -304,6 +337,8 @@ main { padding-bottom: 65px; }
   font-size: 12px;
 }
 
+/* Alphabet navigation */
+
 .alphabet {
   display: flex;
   flex-wrap: wrap;
@@ -322,7 +357,8 @@ main { padding-bottom: 65px; }
   font-size: 12px;
 }
 
-.letter:hover, .letter.active {
+.letter:hover,
+.letter.active {
   color: white;
   background: #303030;
   border-color: #555;
@@ -336,6 +372,8 @@ main { padding-bottom: 65px; }
   font-size: 14px;
 }
 
+/* Footer */
+
 footer {
   padding: 25px 0;
   border-top: 1px solid #222;
@@ -343,7 +381,7 @@ footer {
   font-size: 12px;
 }
 
-/* Movie popup: fades into near-black */
+/* Movie popup */
 
 .movie-overlay {
   position: fixed;
@@ -414,7 +452,9 @@ footer {
   font-weight: 650;
 }
 
-.drive-link:hover { background: #ccc; }
+.drive-link:hover {
+  background: #ccc;
+}
 
 .drive-unavailable {
   color: #777;
@@ -422,37 +462,105 @@ footer {
   padding: 13px 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
+/* Mobile */
+
 @media (max-width: 1000px) {
-  .movie-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .container { width: calc(100% - 40px); }
+  .movie-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .container {
+    width: calc(100% - 40px);
+  }
 }
 
 @media (max-width: 600px) {
-  header { height: 62px; }
-  .container { width: calc(100% - 28px); }
-  .nav-links { gap: 15px; }
-  .nav-links a { font-size: 12px; }
-  .hero { height: 420px; margin-bottom: 32px; }
-  .hero-content { padding-bottom: 30px; }
-  .hero h1 { font-size: 39px; letter-spacing: -1.3px; }
-  .hero-description { font-size: 13px; }
+  header {
+    height: 62px;
+  }
+
+  .container {
+    width: calc(100% - 28px);
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+  }
+
+  .hero {
+    height: 420px;
+    margin-bottom: 32px;
+  }
+
+  .hero-content {
+    padding-bottom: 30px;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+    letter-spacing: -1.3px;
+  }
+
+  .hero-description {
+    font-size: 13px;
+  }
+
   .hero::after {
     background:
       linear-gradient(to right, rgba(12,12,12,.5), transparent),
       linear-gradient(to top, #0c0c0c 0%, rgba(12,12,12,.55) 55%, transparent 100%);
   }
-  .featured-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
-  .movie-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 11px; }
-  .movie-title { font-size: 12px; }
-  .section-heading h2 { font-size: 19px; }
-  .search-panel { flex-wrap: wrap; }
-  .search-box { max-width: none; flex-basis: 100%; }
-  .random-button { width: 100%; }
-  .section { margin-top: 34px; }
+
+  .featured-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .movie-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 11px;
+  }
+
+  .movie-title {
+    font-size: 12px;
+  }
+
+  .section-heading h2 {
+    font-size: 19px;
+  }
+
+  .search-panel {
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    max-width: none;
+    flex-basis: 100%;
+  }
+
+  .random-button {
+    width: 100%;
+  }
+
+  .section {
+    margin-top: 34px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
 }
 </style>
 </head>
@@ -461,6 +569,7 @@ footer {
 <header>
   <div class="container nav">
     <a href="#" class="logo">movium<span>.</span></a>
+
     <nav class="nav-links">
       <a href="#featured">Featured</a>
       <a href="#library">Movies</a>
@@ -471,15 +580,18 @@ footer {
 <main>
   <section class="container hero">
     <img class="hero-backdrop" id="heroBackdrop" alt="">
+
     <div class="hero-content">
       <div class="eyebrow">FEATURED FILM</div>
       <h1 id="heroTitle">Interstellar</h1>
-      <div class="hero-meta" id="heroMeta">2014 · Sci-Fi</div>
+      <div class="hero-meta" id="heroMeta">2014 · Featured film</div>
+
       <p class="hero-description" id="heroDescription">
         A journey beyond the stars.
       </p>
+
       <div class="hero-actions">
-        <button class="play-button" id="heroPlay">▶ Play trailer</button>
+        <button class="play-button" id="heroPlay">▶ Play</button>
         <button class="secondary-button" id="heroDetails">More info</button>
       </div>
     </div>
@@ -493,6 +605,7 @@ footer {
           <p class="section-description">A selection worth your time.</p>
         </div>
       </div>
+
       <div class="featured-grid" id="featuredGrid"></div>
     </section>
 
@@ -502,16 +615,21 @@ footer {
           <h2 id="libraryTitle">Explore movies</h2>
           <p class="section-description">Find your next movie.</p>
         </div>
+
         <span class="count" id="resultsCount"></span>
       </div>
 
       <div class="search-panel">
         <label class="search-box">
           <span class="search-symbol">⌕</span>
-          <input id="search" type="search"
+          <input
+            id="search"
+            type="search"
             placeholder="Search movies..."
-            autocomplete="off">
+            autocomplete="off"
+          >
         </label>
+
         <button class="random-button" id="randomButton">
           ↗ Random movie
         </button>
@@ -527,20 +645,33 @@ footer {
   <div class="container">movium. · A library for movie lovers.</div>
 </footer>
 
-<div class="movie-overlay" id="movieOverlay"
-  role="dialog" aria-modal="true" aria-labelledby="driveMovieTitle">
-  <button class="overlay-close" id="movieOverlayClose"
-    aria-label="Close movie">×</button>
+<div
+  class="movie-overlay"
+  id="movieOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="driveMovieTitle"
+>
+  <button
+    class="overlay-close"
+    id="movieOverlayClose"
+    aria-label="Close movie"
+  >×</button>
 
   <div class="drive-popup">
-    <div class="drive-label">MOVIUM / NOW PLAYING</div>
+    <div class="drive-label">MOVIUM / MOVIE</div>
+
     <h2 id="driveMovieTitle">Movie title</h2>
     <div class="drive-year" id="driveMovieYear"></div>
 
-    <a class="drive-link" id="driveMovieLink"
-      href="#" target="_blank" rel="noopener noreferrer" hidden>
-      Open movie ↗
-    </a>
+    <a
+      class="drive-link"
+      id="driveMovieLink"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+      hidden
+    >Open movie ↗</a>
 
     <div class="drive-unavailable" id="driveUnavailable">
       Movie unavailable
@@ -550,15 +681,22 @@ footer {
 
 <script>
 /*
-  MOVIUM MOVIE SETTINGS
+====================================================
+MOVIUM: EASY MOVIE LIBRARY
+====================================================
 
-  poster: TMDB image path, beginning with /
-  backdrop: wide TMDB image path, beginning with /
-  drive: Google Drive share URL, or "" until you have one
-  trailer: YouTube trailer video ID, or "" if unknown
+To add a movie, copy the movie template at the bottom
+of this list and fill in its details.
 
-  Movie posters use TMDB's image CDN. This starter contains
-  a sample collection. TMDB API integration can expand it.
+title     = movie name
+year      = release year
+poster    = movie poster image path
+backdrop  = wide image for the featured banner
+drive     = Google Drive share link, or "" if missing
+description = short description for the featured banner
+
+To feature a movie, add its exact title to featuredTitles.
+====================================================
 */
 
 const IMAGE = "https://image.tmdb.org/t/p/";
@@ -566,74 +704,88 @@ const POSTER_SIZE = "w500";
 const BACKDROP_SIZE = "w1280";
 
 const movies = [
-  {title:"A Quiet Place",year:2018,id:447332,poster:"/nAU74GmpUk7t5iklEp3bufwDq4n.jpg",backdrop:"/roYyPiQDQKmIKUEhO912693tSja.jpg",drive:""},
-  {title:"Avatar",year:2009,id:19995,poster:"/kyeqWdyUXW608qlYkRqosgbbJyK.jpg",backdrop:"/vL5LR6WdxWPjLPFRLe133jXWsh5.jpg",drive:""},
-  {title:"Barbie",year:2023,id:346698,poster:"/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",backdrop:"/ctMserH8g2SeOAnCw5gFjdQF8mo.jpg",drive:""},
-  {title:"Black Panther",year:2018,id:284054,poster:"/uxzzxijgPIY7slzFvMotPv8wjKA.jpg",backdrop:"/b6ZJZHUdMEFECvGiDpJjlfUWela.jpg",drive:""},
-  {title:"Coco",year:2017,id:354912,poster:"/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg",backdrop:"/askg3SMvhqEl4OL52YuvdtY40Yb.jpg",drive:""},
-  {title:"Dune",year:2021,id:438631,poster:"/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",backdrop:"/jYEW5xZkZk2WTrdbMGAPFuBqbDc.jpg",drive:""},
-  {title:"Dune: Part Two",year:2024,id:693134,poster:"/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",backdrop:"/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",drive:""},
-  {title:"Everything Everywhere All at Once",year:2022,id:545611,poster:"/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg",backdrop:"/ss0Os3uWJfQAENILHZUdX8Tt1OC.jpg",drive:""},
-  {title:"Fight Club",year:1999,id:550,poster:"/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",backdrop:"/hZkgoQYus5vegHoetLkCJzb17zJ.jpg",drive:""},
-  {title:"Frozen",year:2013,id:109445,poster:"/kgwjIb2JDHRhNk13lmSxiClFjVk.jpg",backdrop:"/bHarw8xrmQeqf3t8HpuMY7zoK4x.jpg",drive:""},
-  {title:"Gladiator",year:2000,id:98,poster:"/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",backdrop:"/hND7xAaxxBgaIspp9iMsaEXOSTz.jpg",drive:""},
-  {title:"Harry Potter and the Philosopher's Stone",year:2001,id:671,poster:"/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg",backdrop:"/hziiv14OpD73u9gAak4XDDfBKa2.jpg",drive:""},
-  {title:"Inception",year:2010,id:27205,poster:"/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",backdrop:"/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",drive:""},
-  {title:"Interstellar",year:2014,id:157336,poster:"/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",backdrop:"/xJHokMbljvjADYdit5fK5VQsXEG.jpg",drive:"",trailer:"zSWdZVtXT7E",description:"A journey beyond the stars. One crew travels through a wormhole to search for a new home for humanity."},
-  {title:"Joker",year:2019,id:475557,poster:"/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",backdrop:"/n6bUvigpRFqSwmPp1m2YADdbRBc.jpg",drive:""},
-  {title:"John Wick",year:2014,id:245891,poster:"/fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg",backdrop:"/umC04Cozevu8nn3JTDJ1pc7PVTn.jpg",drive:""},
-  {title:"La La Land",year:2016,id:313369,poster:"/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg",backdrop:"/qJeU7KM4nT2C1WpOrwPcSDGFUWE.jpg",drive:""},
-  {title:"Logan",year:2017,id:263115,poster:"/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg",backdrop:"",drive:""},
-  {title:"Moana",year:2016,id:277834,poster:"/9tzN8sPbyod2dsa0lwuvrwBDWra.jpg",backdrop:"/7ABsaBkO1jA2psC8Hy4IDhkID4h.jpg",drive:""},
-  {title:"Oppenheimer",year:2023,id:872585,poster:"/ptpr0kGAckfQkJeJIt8st5dglvd.jpg",backdrop:"/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",drive:""},
-  {title:"Parasite",year:2019,id:496243,poster:"/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",backdrop:"/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg",drive:""},
-  {title:"Pulp Fiction",year:1994,id:680,poster:"/vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg",backdrop:"/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg",drive:""},
-  {title:"Shrek",year:2001,id:808,poster:"/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg",backdrop:"",drive:""},
-  {title:"Spider-Man: No Way Home",year:2021,id:634649,poster:"/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",backdrop:"/14QbnygCuTO0vl7CAFmPf1fgZfV.jpg",drive:""},
-  {title:"The Batman",year:2022,id:414906,poster:"/74xTEgt7R36Fpooo50r9T25onhq.jpg",backdrop:"/b0PlSFdDwbyK0cf5RxwDpaOJQvQ.jpg",drive:""},
-  {title:"The Dark Knight",year:2008,id:155,poster:"/qJ2tW6WMUDux911r6m7haRef0WH.jpg",backdrop:"/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg",drive:""},
-  {title:"The Incredibles",year:2004,id:9806,poster:"/2LqaLgk4Z226KkgPJuiOQ58wvrm.jpg",backdrop:"",drive:""},
-  {title:"The Lion King",year:1994,id:8587,poster:"/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",backdrop:"/wXsQvli6tWqja51pYxXNG1LFIGV.jpg",drive:""},
-  {title:"The Matrix",year:1999,id:603,poster:"/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",backdrop:"/icmmSD4vTTDKOq2vvdulafOGw93.jpg",drive:""},
-  {title:"The Shawshank Redemption",year:1994,id:278,poster:"/9cjIGR8ymT8ePNF9Tn4DkD6.jpg",backdrop:"/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg",drive:""},
-  {title:"Titanic",year:1997,id:597,poster:"/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",backdrop:"/rzdPqYx7Um4FUZeD8wpXqjAUcEm.jpg",drive:""},
-  {title:"Top Gun: Maverick",year:2022,id:361743,poster:"/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",backdrop:"/AaV1YIdWKnjAIAOe8UUKBFm327v.jpg",drive:""},
-  {title:"Up",year:2009,id:14160,poster:"/vpbaStTMt8qqXaEgnOR2EE4DNJk.jpg",backdrop:"",drive:""},
-  {title:"WALL-E",year:2008,id:10681,poster:"/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",backdrop:"",drive:""},
-  {title:"Whiplash",year:2014,id:244786,poster:"/7fn624j5lj3xTme2SgiLCeuedmO.jpg",backdrop:"/6bbZ6XyvgfjhQwbplnUh1LSj1ky.jpg",drive:""},
-  {title:"Your Name",year:2016,id:372058,poster:"/q719jXXEzOoYaps6babgKnONONX.jpg",backdrop:"/8GJsy7w7frGquw1cy9jasog7p2Z.jpg",drive:""},
-  {title:"Zootopia",year:2016,id:269149,poster:"/hlK0e0wAQ3VLuJcsfIYPvb4JVud.jpg",backdrop:"/mhdeE1yShHTaDbJVdWyTlzFvNkr.jpg",drive:""}
+  {
+    title: "Interstellar",
+    year: 2014,
+    poster: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    backdrop: "/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
+    drive: "",
+    description: "A journey beyond the stars."
+  },
+
+  {
+    title: "Whiplash",
+    year: 2014,
+    poster: "/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
+    backdrop: "/6bbZ6XyvgfjhQwbplnUh1LSj1ky.jpg",
+    drive: "",
+    description: "An ambitious drummer pushes himself to his limits."
+  }
+
+  /*
+  ==================================================
+  COPY THIS TEMPLATE TO ADD ANOTHER MOVIE
+
+  ,
+  {
+    title: "Movie Name",
+    year: 2025,
+    poster: "/POSTER_IMAGE_PATH.jpg",
+    backdrop: "/BACKDROP_IMAGE_PATH.jpg",
+    drive: "",
+    description: "Write a short description here."
+  }
+
+  Remove the /* and * / around your copied movie
+  if you want to use the template above.
+  ==================================================
+  */
 ];
+
+/* Add the exact movie titles you want featured here. */
 
 const featuredTitles = [
   "Interstellar",
-  "The Batman",
-  "Oppenheimer",
-  "Inception",
-  "Spider-Man: No Way Home"
+  "Whiplash"
 ];
 
 const letters = ["All", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+
 const $ = id => document.getElementById(id);
+
 let selectedLetter = "All";
 let currentMovie = null;
 
+/* Image URLs */
+
 function posterURL(movie) {
-  return movie.poster
-    ? IMAGE + POSTER_SIZE + movie.poster
-    : `https://placehold.co/500x750/171717/ffffff?text=${encodeURIComponent(movie.title)}`;
+  if (movie.poster && movie.poster.startsWith("/")) {
+    return IMAGE + POSTER_SIZE + movie.poster;
+  }
+
+  return `https://placehold.co/500x750/171717/ffffff?text=${encodeURIComponent(movie.title)}`;
 }
 
 function backdropURL(movie) {
-  return movie.backdrop ? IMAGE + BACKDROP_SIZE + movie.backdrop : "";
+  if (movie.backdrop && movie.backdrop.startsWith("/")) {
+    return IMAGE + BACKDROP_SIZE + movie.backdrop;
+  }
+
+  return "";
 }
+
+/* Create a movie card */
 
 function makeCard(movie) {
   const card = document.createElement("article");
+
   card.className = "movie";
   card.tabIndex = 0;
   card.setAttribute("role", "button");
-  card.setAttribute("aria-label", `${movie.title}, ${movie.year}`);
+  card.setAttribute(
+    "aria-label",
+    `${movie.title}, ${movie.year}`
+  );
 
   const wrap = document.createElement("div");
   wrap.className = "poster-wrap";
@@ -643,9 +795,11 @@ function makeCard(movie) {
   img.src = posterURL(movie);
   img.alt = `${movie.title} poster`;
   img.loading = "lazy";
+
   img.onerror = () => {
     img.onerror = null;
-    img.src = `https://placehold.co/500x750/171717/ffffff?text=${encodeURIComponent(movie.title)}`;
+    img.src =
+      `https://placehold.co/500x750/171717/ffffff?text=${encodeURIComponent(movie.title)}`;
   };
 
   const title = document.createElement("div");
@@ -660,6 +814,7 @@ function makeCard(movie) {
   card.append(wrap, title, year);
 
   card.addEventListener("click", () => openMovie(movie));
+
   card.addEventListener("keydown", event => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -670,24 +825,38 @@ function makeCard(movie) {
   return card;
 }
 
+/* Featured section */
+
 function renderFeatured() {
   $("featuredGrid").replaceChildren();
 
   featuredTitles.forEach(title => {
-    const movie = movies.find(item => item.title === title);
-    if (movie) $("featuredGrid").appendChild(makeCard(movie));
+    const movie = movies.find(
+      item => item.title.toLowerCase() === title.toLowerCase()
+    );
+
+    if (movie) {
+      $("featuredGrid").appendChild(makeCard(movie));
+    }
   });
 }
+
+/* A-Z letter buttons */
 
 function renderAlphabet() {
   $("alphabet").replaceChildren();
 
   letters.forEach(letter => {
     const button = document.createElement("button");
-    button.className = "letter" +
-      (selectedLetter === letter ? " active" : "");
+
+    button.className =
+      "letter" + (selectedLetter === letter ? " active" : "");
+
     button.textContent = letter;
-    button.setAttribute("aria-pressed", selectedLetter === letter);
+    button.setAttribute(
+      "aria-pressed",
+      selectedLetter === letter ? "true" : "false"
+    );
 
     button.addEventListener("click", () => {
       selectedLetter = letter;
@@ -699,13 +868,17 @@ function renderAlphabet() {
   });
 }
 
+/* Main movie library */
+
 function renderMovies() {
   const query = $("search").value.trim().toLowerCase();
 
   const filtered = movies
     .filter(movie => movie.title.toLowerCase().includes(query))
-    .filter(movie => selectedLetter === "All" ||
-      movie.title.toUpperCase().startsWith(selectedLetter))
+    .filter(movie =>
+      selectedLetter === "All" ||
+      movie.title.toUpperCase().startsWith(selectedLetter)
+    )
     .sort((a, b) => a.title.localeCompare(b.title));
 
   $("movieGrid").replaceChildren();
@@ -716,12 +889,14 @@ function renderMovies() {
       ? "Explore movies"
       : `Movies starting with ${selectedLetter}`;
 
-  $("resultsCount").textContent = `${filtered.length} movies`;
+  $("resultsCount").textContent =
+    `${filtered.length} ${filtered.length === 1 ? "movie" : "movies"}`;
 
-  if (!filtered.length) {
+  if (filtered.length === 0) {
     const empty = document.createElement("div");
     empty.className = "empty";
     empty.textContent = "No movies found. Try another search.";
+
     $("movieGrid").appendChild(empty);
     return;
   }
@@ -731,12 +906,16 @@ function renderMovies() {
   });
 }
 
+/* Featured banner */
+
 function setHero(movie) {
   currentMovie = movie;
+
   $("heroTitle").textContent = movie.title;
   $("heroMeta").textContent = `${movie.year} · Featured film`;
-  $("heroDescription").textContent = movie.description ||
-    `Discover ${movie.title}, released in ${movie.year}.`;
+
+  $("heroDescription").textContent =
+    movie.description || `${movie.title}, released in ${movie.year}.`;
 
   const backdrop = $("heroBackdrop");
   const url = backdropURL(movie);
@@ -744,6 +923,7 @@ function setHero(movie) {
   if (url) {
     backdrop.style.display = "block";
     backdrop.src = url;
+
     backdrop.onerror = () => {
       backdrop.onerror = null;
       backdrop.style.display = "none";
@@ -754,6 +934,8 @@ function setHero(movie) {
   }
 }
 
+/* Movie popup */
+
 function openMovie(movie) {
   currentMovie = movie;
 
@@ -763,7 +945,10 @@ function openMovie(movie) {
   const link = $("driveMovieLink");
   const unavailable = $("driveUnavailable");
 
-  if (movie.drive && /^https:\/\/drive\.google\.com\//i.test(movie.drive)) {
+  if (
+    movie.drive &&
+    /^https:\/\/drive\.google\.com\//i.test(movie.drive)
+  ) {
     link.href = movie.drive;
     link.hidden = false;
     unavailable.hidden = true;
@@ -784,19 +969,7 @@ function closeMovie() {
   document.body.classList.remove("overlay-active");
 }
 
-function playTrailer(movie) {
-  if (!movie) return;
-
-  const query = encodeURIComponent(
-    `${movie.title} ${movie.year} official trailer`
-  );
-
-  window.open(
-    `https://www.youtube.com/results?search_query=${query}`,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
+/* Search */
 
 $("search").addEventListener("input", () => {
   selectedLetter = "All";
@@ -804,38 +977,62 @@ $("search").addEventListener("input", () => {
   renderMovies();
 });
 
+/* Random movie */
+
 $("randomButton").addEventListener("click", () => {
   const query = $("search").value.trim().toLowerCase();
 
   const candidates = movies.filter(movie =>
     movie.title.toLowerCase().includes(query) &&
-    (selectedLetter === "All" ||
-      movie.title.toUpperCase().startsWith(selectedLetter))
+    (
+      selectedLetter === "All" ||
+      movie.title.toUpperCase().startsWith(selectedLetter)
+    )
   );
 
   if (!candidates.length) return;
 
-  const movie = candidates[Math.floor(Math.random() * candidates.length)];
+  const movie =
+    candidates[Math.floor(Math.random() * candidates.length)];
+
   openMovie(movie);
 });
 
-$("heroPlay").addEventListener("click", () => playTrailer(currentMovie));
-$("heroDetails").addEventListener("click", () => openMovie(currentMovie));
+/* Featured buttons */
+
+$("heroPlay").addEventListener("click", () => {
+  if (currentMovie) openMovie(currentMovie);
+});
+
+$("heroDetails").addEventListener("click", () => {
+  if (currentMovie) openMovie(currentMovie);
+});
+
+/* Close popup */
 
 $("movieOverlayClose").addEventListener("click", closeMovie);
 
 $("movieOverlay").addEventListener("click", event => {
-  if (event.target === $("movieOverlay")) closeMovie();
+  if (event.target === $("movieOverlay")) {
+    closeMovie();
+  }
 });
 
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closeMovie();
+  if (event.key === "Escape") {
+    closeMovie();
+  }
 });
+
+/* Start the site */
 
 renderAlphabet();
 renderFeatured();
 renderMovies();
-setHero(movies.find(movie => movie.title === "Interstellar"));
+
+setHero(
+  movies.find(movie => movie.title === "Interstellar") || movies[0]
+);
 </script>
 </body>
 </html>
