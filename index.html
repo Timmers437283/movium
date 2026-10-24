@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -647,7 +646,7 @@ const movies = [
     category: ["Superheroes", "Featured"],
     story: "Peter Parker faces a new chapter as Spider-Man. Add a verified synopsis when official plot details are available.",
     cast: "Tom Holland, Zendaya, Jacob Batalon",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1cBtLxO4XbS7exzq05I4E1fA8IF8cBKT0/view"
   },
   {
     title: "Coyote vs. Acme",
@@ -657,7 +656,7 @@ const movies = [
     category: ["Comedy", "Animation"],
     story: "Wile E. Coyote takes on the Acme Corporation in a comedy inspired by the classic Looney Tunes characters.",
     cast: "Will Forte, John Cena, Lana Condor",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1Z2lQoBMsnwQI3BSpIvyXxrskFlBMl-UR/view"
   },
   {
     title: "Toy Story 5",
@@ -667,7 +666,7 @@ const movies = [
     category: ["Animation", "Family"],
     story: "Woody, Buzz, and the gang face a new adventure as toys navigate a world increasingly shaped by technology.",
     cast: "Tom Hanks, Tim Allen, Joan Cusack, Greta Lee",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1ubdX6AHmMzsPEZpq0_W3k7cQVS_yCtJI/view?t=0.18"
   },
   {
     title: "The Odyssey",
@@ -677,7 +676,7 @@ const movies = [
     category: ["Adventure", "Featured"],
     story: "An epic adaptation of Homer's ancient tale follows Odysseus on his long and dangerous journey home after the Trojan War.",
     cast: "Matt Damon, Anne Hathaway, Tom Holland, Zendaya",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1ZWEQ9sefcNmwWKRlzCgx96gNzMSpI2iQ/view"
   },
   {
     title: "A Bug's Life",
@@ -687,7 +686,7 @@ const movies = [
     category: ["Animation", "Family"],
     story: "An inventive ant recruits a group of circus bugs to help defend his colony against a gang of grasshoppers.",
     cast: "Dave Foley, Kevin Spacey, Julia Louis-Dreyfus, Hayden Panettiere",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1AIq4OqiMWiY9zZSayF5VID7pfTwSH6BM/view"
   },
   {
     title: "A Charlie Brown Christmas",
@@ -697,7 +696,7 @@ const movies = [
     category: ["Holiday Favorites", "Animation", "Family"],
     story: "Charlie Brown searches for the meaning of Christmas while directing a holiday play with his friends.",
     cast: "Peter Robbins, Christopher Shea, Tracy Stratford",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1e2UIrJdsz_0k5tp2v0EnPZiPv2ZQSTzg/view"
   },
   {
     title: "A Goofy Movie",
@@ -707,7 +706,7 @@ const movies = [
     category: ["Animation", "Family"],
     story: "Goofy takes his son Max on a road trip, hoping to reconnect while Max has plans of his own.",
     cast: "Bill Farmer, Jason Marsden, Jim Cummings, Kellie Martin",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1ify_EMaQW-ZAn2F0STztn2AGU-jE7aHL/view"
   },
   {
     title: "Ant-Man and the Wasp: Quantumania",
@@ -717,7 +716,7 @@ const movies = [
     category: ["Superheroes", "Marvel"],
     story: "Scott Lang and his family explore the Quantum Realm and encounter a powerful new threat.",
     cast: "Paul Rudd, Evangeline Lilly, Jonathan Majors, Kathryn Newton",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1AW3Zm8256tzZ-37lmgYmIGse4knu8IdA/view"
   },
   {
     title: "Avengers: Endgame",
@@ -727,7 +726,7 @@ const movies = [
     category: ["Avengers", "Superheroes", "Marvel"],
     story: "The surviving Avengers work together to reverse the devastating consequences of Thanos's actions.",
     cast: "Robert Downey Jr., Chris Evans, Mark Ruffalo, Scarlett Johansson, Chris Hemsworth",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view"
   },
   {
     title: "Avengers: Infinity War",
@@ -737,7 +736,7 @@ const movies = [
     category: ["Avengers", "Superheroes", "Marvel"],
     story: "The Avengers and their allies face a race against time to stop Thanos from collecting the Infinity Stones.",
     cast: "Robert Downey Jr., Chris Hemsworth, Mark Ruffalo, Chris Evans, Josh Brolin",
-    drive: ""
+    drive: "https://drive.google.com/file/d/1zpl7Dngm7ESW_yLZvcQMm9AhmR1izyus/view"
   },
   {
     title: "Interstellar",
@@ -929,14 +928,6 @@ function openMovie(movie) {
   message.className = "player-message";
   message.id = "playerMessage";
 
-  /*
-    Set movie.drive to an authorized Google Drive video URL
-    or a direct video file URL.
-
-    Drive embeds require the file to be accessible to the viewer.
-    Picture-in-Picture for embedded players depends on the host.
-  */
-
   const driveURL = movie.drive || "";
   const driveMatch = driveURL.match(
     /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
@@ -967,7 +958,6 @@ function openMovie(movie) {
 
   stage.appendChild(message);
 
-  // The message stays visible until a native video is ready.
   const nativeVideo = $("nativeVideo");
   if (nativeVideo) {
     nativeVideo.addEventListener("loadedmetadata", () => message.classList.add("hidden"));
@@ -976,7 +966,6 @@ function openMovie(movie) {
       message.classList.remove("hidden");
     });
   } else if (driveMatch) {
-    // An iframe cannot reliably report whether the embedded video itself plays.
     message.textContent = "";
     message.classList.add("hidden");
   }
@@ -993,7 +982,6 @@ function closePlayer() {
   $("playerOverlay").setAttribute("aria-hidden", "true");
   document.body.classList.remove("player-open");
 
-  // Removing the player stops any video that was playing.
   $("playerStage").replaceChildren();
   $("pipButton").hidden = true;
 }
