@@ -4,309 +4,270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0c0c0c">
-<title>📼</title>
+<meta name="theme-color" content="#000000">
+<title>Movium</title>
 
 <style>
 :root {
   --bg: #0c0c0c;
-  --white: #f5f5f5;
-  --gray: #929292;
+  --panel: #151515;
+  --border: #292929;
+  --text: #f5f5f5;
+  --muted: #929292;
+  --blue: #0a84ff;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
+  color: var(--text);
   background: var(--bg);
-  color: var(--white);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-body.overlay-active {
-  overflow: hidden;
-}
+body.player-open { overflow: hidden; }
 
-button, input {
-  font: inherit;
-}
+button, input { font: inherit; }
+button { cursor: pointer; }
 
-button {
-  cursor: pointer;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
 }
-
-.container {
-  width: min(1400px, calc(100% - 64px));
-  margin: auto;
-}
-
-/* Navigation */
 
 header {
-  height: 72px;
-  border-bottom: 1px solid #222;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #0c0c0c;
+  border-bottom: 1px solid #202020;
 }
 
 .nav {
-  display: flex;
-  height: 100%;
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 520px) 1fr;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
+  width: min(1500px, calc(100% - 48px));
+  margin: auto;
 }
 
 .logo {
+  justify-self: start;
   color: white;
   font-size: 27px;
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: -1.5px;
   text-decoration: none;
 }
 
-.logo span {
-  color: #888;
-}
+.logo span { color: #888; }
 
-.nav-links {
+.search-wrap {
+  width: 100%;
+  height: 41px;
   display: flex;
-  gap: 27px;
   align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+  background: #171717;
+  border: 1px solid #303030;
+  border-radius: 5px;
 }
 
-.nav-links a {
-  color: #aaa;
-  font-size: 13px;
-  text-decoration: none;
+.search-wrap svg {
+  width: 18px;
+  height: 18px;
+  color: #929292;
+  flex-shrink: 0;
 }
 
-.nav-links a:hover {
+#search {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
   color: white;
+  font-size: 13px;
 }
 
-/* Featured movie */
+#search::placeholder { color: #888; }
+
+.nav-right {
+  justify-self: end;
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+}
 
 main {
+  width: min(1500px, calc(100% - 48px));
+  margin: auto;
   padding-bottom: 65px;
 }
 
 .hero {
-  height: clamp(350px, 43vw, 550px);
+  height: clamp(370px, 43vw, 570px);
   position: relative;
-  isolation: isolate;
   display: flex;
   align-items: flex-end;
+  margin-bottom: 38px;
   overflow: hidden;
-  margin-bottom: 42px;
+  isolation: isolate;
 }
 
 .hero-backdrop {
   position: absolute;
+  z-index: -2;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
-  z-index: -2;
   background: #111;
 }
 
 .hero::after {
   content: "";
   position: absolute;
-  inset: 0;
   z-index: -1;
+  inset: 0;
   background:
-    linear-gradient(to right, #0c0c0c 0%, rgba(12,12,12,.85) 10%, rgba(12,12,12,.24) 55%, transparent 85%),
-    linear-gradient(to left, #0c0c0c 0%, transparent 28%),
-    linear-gradient(to top, #0c0c0c 0%, rgba(12,12,12,.22) 40%, transparent 90%);
+    linear-gradient(0deg, #0c0c0c 0%, rgba(12,12,12,.8) 13%, transparent 70%),
+    linear-gradient(90deg, rgba(12,12,12,.9), rgba(12,12,12,.35) 45%, transparent 85%);
 }
 
 .hero-content {
-  max-width: 550px;
-  padding: 0 0 48px 4px;
+  max-width: 580px;
+  padding: 0 0 46px 6px;
 }
 
 .eyebrow {
+  color: #c7c7c7;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 2.3px;
-  color: #bbb;
-  margin-bottom: 15px;
+  letter-spacing: 2px;
+  margin-bottom: 13px;
 }
 
 .hero h1 {
-  font-size: clamp(38px, 5vw, 65px);
+  margin: 0;
+  font-size: clamp(38px, 5vw, 66px);
   letter-spacing: -2px;
   line-height: 1.03;
-  margin: 0;
 }
 
 .hero-meta {
-  margin-top: 14px;
-  color: #ccc;
+  margin-top: 13px;
+  color: #ddd;
   font-size: 13px;
 }
 
 .hero-description {
-  max-width: 410px;
-  margin: 15px 0 23px;
-  color: #bbb;
+  color: #ccc;
+  max-width: 460px;
   font-size: 14px;
   line-height: 1.7;
+  margin: 14px 0 21px;
 }
 
 .hero-actions {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.play-button,
-.secondary-button {
+.primary-btn, .secondary-btn {
   border-radius: 5px;
-  padding: 13px 18px;
+  padding: 12px 18px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.play-button {
+.primary-btn {
   color: #111;
-  background: white;
-  border: 1px solid white;
+  background: #fff;
+  border: 1px solid #fff;
 }
 
-.play-button:hover {
-  background: #ddd;
-}
+.primary-btn:hover { background: #ddd; }
 
-.secondary-button {
-  background: #191919;
+.secondary-btn {
+  color: #fff;
+  background: #222;
   border: 1px solid #444;
-  color: white;
 }
 
-.secondary-button:hover {
-  background: #292929;
-}
-
-/* Search */
-
-.search-panel {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  flex: 1;
-  max-width: 500px;
-  height: 44px;
-  padding: 0 13px;
-  border: 1px solid #303030;
-  border-radius: 5px;
-  background: #141414;
-}
-
-.search-symbol {
-  color: #888;
-  font-size: 20px;
-}
-
-#search {
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-  color: white;
-  background: transparent;
-  outline: none;
-  border: none;
-  font-size: 13px;
-}
-
-#search::placeholder {
-  color: #777;
-}
-
-.random-button {
-  height: 44px;
-  padding: 0 15px;
-  color: white;
-  background: #191919;
-  border: 1px solid #383838;
-  border-radius: 5px;
-  font-size: 12px;
-}
-
-.random-button:hover {
-  background: #292929;
-}
-
-/* Movie sections */
+.secondary-btn:hover { background: #333; }
 
 .section {
-  margin-top: 42px;
+  margin-top: 40px;
+  scroll-margin-top: 85px;
 }
 
-.section-heading {
+.section-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 19px;
-  gap: 15px;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 17px;
 }
 
-.section-heading h2 {
+.section-head h2 {
   margin: 0;
   font-size: 21px;
   letter-spacing: -.5px;
 }
 
-.section-description {
-  margin: 7px 0 0;
-  font-size: 13px;
-  color: var(--gray);
+.section-subtitle {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
 }
 
-.count {
+.section-count {
+  color: #888;
   font-size: 12px;
-  color: var(--gray);
   white-space: nowrap;
 }
 
-.featured-grid {
+.movie-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 190px));
-  gap: 17px;
+  grid-auto-columns: minmax(145px, 190px);
+  grid-auto-flow: column;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 2px 2px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #383838 transparent;
 }
 
-.movie-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 27px 17px;
+.movie-row::-webkit-scrollbar { height: 5px; }
+.movie-row::-webkit-scrollbar-thumb {
+  background: #383838;
+  border-radius: 4px;
 }
 
-.movie {
+.movie-card {
   min-width: 0;
   cursor: pointer;
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
 
 .poster-wrap {
   position: relative;
-  width: 100%;
   aspect-ratio: 2 / 3;
   overflow: hidden;
-  background: #181818;
-  border: 1px solid #282828;
   border-radius: 4px;
+  border: 1px solid #282828;
+  background: #181818;
 }
 
 .poster {
@@ -317,18 +278,29 @@ main {
   transition: transform .2s ease, opacity .2s ease;
 }
 
-.movie:hover .poster {
-  transform: scale(1.035);
-  opacity: .85;
+.movie-card:hover .poster {
+  transform: scale(1.04);
+  opacity: .84;
+}
+
+.poster-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+  color: #ddd;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  height: 100%;
 }
 
 .movie-title {
-  margin-top: 10px;
-  color: #f2f2f2;
+  margin-top: 9px;
   font-size: 13px;
+  line-height: 1.45;
   font-weight: 600;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
 }
 
 .movie-year {
@@ -337,103 +309,87 @@ main {
   font-size: 12px;
 }
 
-/* Alphabet navigation */
-
-.alphabet {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 24px;
+.empty {
+  color: #999;
+  padding: 40px 0;
+  font-size: 14px;
 }
 
-.letter {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 8px;
-  color: #aaa;
-  background: #151515;
-  border: 1px solid #292929;
+footer {
+  border-top: 1px solid #222;
+  padding: 24px;
+  color: #777;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Movie player: true black background */
+
+.player-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: none;
+  overflow-y: auto;
+  background: #000;
+  color: white;
+}
+
+.player-overlay.open { display: block; }
+
+.player-topbar {
+  height: 58px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: #000;
+}
+
+.player-brand {
+  font-weight: 800;
+  letter-spacing: -1px;
+  font-size: 21px;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.player-control {
+  border: 1px solid #393939;
+  color: #eee;
+  background: #141414;
+  padding: 9px 12px;
   border-radius: 4px;
   font-size: 12px;
 }
 
-.letter:hover,
-.letter.active {
-  color: white;
-  background: #303030;
-  border-color: #555;
+.player-control:hover { background: #292929; }
+
+.player-control.close {
+  width: 37px;
+  height: 37px;
+  padding: 0;
+  font-size: 25px;
 }
 
-.empty {
-  grid-column: 1 / -1;
-  padding: 45px 0;
-  color: #929292;
-  text-align: center;
-  font-size: 14px;
-}
-
-/* Footer */
-
-footer {
-  padding: 25px 0;
-  border-top: 1px solid #222;
-  color: #777;
-  font-size: 12px;
-}
-
-/* Full-screen video player */
-
-.movie-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 24px 24px;
-  background: rgb(1, 1, 1);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 250ms ease, visibility 250ms ease;
-}
-
-.movie-overlay.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.player-close {
-  position: absolute;
-  top: 14px;
-  right: 22px;
-  z-index: 5;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 5px;
-  background: #181818;
-  color: white;
-  font-size: 30px;
-  font-weight: 300;
-}
-
-.player-close:hover {
-  background: #303030;
-}
-
-.player-container {
+.player-stage {
   position: relative;
-  width: min(1200px, 100%);
-  height: min(75vh, 760px);
+  width: 100%;
+  height: min(76vh, 1000px);
+  min-height: 260px;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.player-container iframe {
+.player-stage iframe,
+.player-stage video {
   display: block;
   width: 100%;
   height: 100%;
@@ -441,335 +397,430 @@ footer {
   background: #000;
 }
 
-.player-loading {
+.player-message {
   position: absolute;
-  z-index: 1;
-  color: #888;
-  font-size: 13px;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: #aaa;
+  background: #000;
+  font-size: 14px;
+  line-height: 1.7;
   pointer-events: none;
 }
 
-.player-container.has-video .player-loading {
-  display: none;
+.player-message.hidden { display: none; }
+
+.player-info {
+  width: min(1100px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 27px 0 55px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 320px);
+  gap: 35px;
 }
 
-@media (max-width: 1000px) {
-  .movie-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+.player-info h1 {
+  margin: 0;
+  font-size: clamp(27px, 4vw, 42px);
+  letter-spacing: -1px;
+}
 
-  .container {
-    width: calc(100% - 40px);
+.detail-meta {
+  margin-top: 10px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.detail-story {
+  margin-top: 18px;
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.detail-label {
+  margin-top: 21px;
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.detail-cast {
+  margin-top: 7px;
+  color: #ddd;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.detail-poster {
+  width: 100%;
+  max-width: 230px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 1px solid #222;
+  border-radius: 4px;
+  background: #151515;
+}
+
+.player-note {
+  color: #777;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+@media (min-width: 1100px) {
+  .movie-row {
+    grid-auto-columns: minmax(160px, 205px);
+    gap: 19px;
   }
 }
 
-@media (max-width: 600px) {
-  header {
-    height: 62px;
-  }
-
-  .container {
+@media (max-width: 650px) {
+  .nav {
     width: calc(100% - 28px);
+    min-height: 112px;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 49px 49px;
+    gap: 0 12px;
+    padding-bottom: 8px;
   }
 
-  .nav-links {
-    gap: 15px;
+  .logo { font-size: 24px; }
+
+  .nav-right {
+    font-size: 11px;
   }
 
-  .nav-links a {
-    font-size: 12px;
+  .search-wrap {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    height: 39px;
   }
 
-  .hero {
-    height: 420px;
-    margin-bottom: 32px;
-  }
+  main { width: calc(100% - 28px); }
 
-  .hero-content {
-    padding-bottom: 30px;
-  }
+  .hero { height: 430px; }
 
-  .hero h1 {
-    font-size: 39px;
-    letter-spacing: -1.3px;
-  }
+  .hero-content { padding-bottom: 30px; }
 
-  .hero-description {
-    font-size: 13px;
-  }
+  .hero h1 { font-size: 39px; }
+
+  .hero-description { font-size: 13px; }
 
   .hero::after {
     background:
-      linear-gradient(to right, rgba(12,12,12,.5), transparent),
-      linear-gradient(to top, #0c0c0c 0%, rgba(12,12,12,.55) 55%, transparent 100%);
+      linear-gradient(0deg, #0c0c0c, rgba(12,12,12,.35) 75%, transparent),
+      linear-gradient(90deg, rgba(12,12,12,.55), transparent);
   }
 
-  .featured-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 13px;
+  .movie-row {
+    grid-auto-columns: minmax(125px, 41vw);
+    gap: 12px;
   }
 
-  .movie-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px 11px;
-  }
+  .section { margin-top: 31px; }
 
-  .movie-title {
-    font-size: 12px;
-  }
+  .section-head h2 { font-size: 19px; }
 
-  .section-heading h2 {
-    font-size: 19px;
-  }
+  .player-topbar { padding: 0 12px; }
 
-  .search-panel {
-    flex-wrap: wrap;
-  }
+  .player-brand { font-size: 18px; }
 
-  .search-box {
-    max-width: none;
-    flex-basis: 100%;
-  }
+  .player-control { padding: 8px 9px; }
 
-  .random-button {
-    width: 100%;
-  }
-
-  .section {
-    margin-top: 34px;
-  }
-
-  .movie-overlay {
-    padding: 60px 0 0;
-  }
-
-  .player-container {
-    width: 100%;
+  .player-stage {
     height: 56.25vw;
-    max-height: 75vh;
+    min-height: 210px;
+    max-height: 70vh;
   }
+
+  .player-info {
+    width: calc(100% - 28px);
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding-top: 22px;
+  }
+
+  .detail-poster { max-width: 145px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-  }
+  *, *::before, *::after { transition: none !important; }
 }
 </style>
 </head>
 
 <body>
 <header>
-  <div class="container nav">
+  <div class="nav">
     <a href="#" class="logo">movium<span>.</span></a>
 
-    <nav class="nav-links">
-      <a href="#featured">Featured</a>
-      <a href="#library">Movies</a>
-    </nav>
+    <label class="search-wrap" aria-label="Search movies">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linecap="round">
+        <circle cx="10.8" cy="10.8" r="6.8"></circle>
+        <path d="m16 16 4.5 4.5"></path>
+      </svg>
+      <input id="search" type="search" placeholder="Search movies..." autocomplete="off">
+    </label>
+
+    <div class="nav-right">Your movie library</div>
   </div>
 </header>
 
 <main>
-  <section class="container hero">
+  <section class="hero">
     <img class="hero-backdrop" id="heroBackdrop" alt="">
-
     <div class="hero-content">
       <div class="eyebrow">FEATURED FILM</div>
       <h1 id="heroTitle">Interstellar</h1>
-      <div class="hero-meta" id="heroMeta">2014 · Featured film</div>
-
-      <p class="hero-description" id="heroDescription">
-        A journey beyond the stars.
-      </p>
-
+      <div class="hero-meta" id="heroMeta"></div>
+      <p class="hero-description" id="heroDescription"></p>
       <div class="hero-actions">
-        <button class="play-button" id="heroPlay">▶ Play</button>
-        <button class="secondary-button" id="heroDetails">More info</button>
+        <button class="primary-btn" id="heroPlay">▶ Play</button>
+        <button class="secondary-btn" id="heroInfo">More info</button>
       </div>
     </div>
   </section>
 
-  <div class="container">
-    <section class="section" id="featured">
-      <div class="section-heading">
-        <div>
-          <h2>Featured films</h2>
-          <p class="section-description">A selection worth your time.</p>
-        </div>
+  <div id="collections"></div>
+  <section class="section" id="searchResults" hidden>
+    <div class="section-head">
+      <div>
+        <h2>Search results</h2>
+        <p class="section-subtitle">Movies matching your search</p>
       </div>
-
-      <div class="featured-grid" id="featuredGrid"></div>
-    </section>
-
-    <section class="section" id="library">
-      <div class="section-heading">
-        <div>
-          <h2 id="libraryTitle">Explore movies</h2>
-          <p class="section-description">Find your next movie.</p>
-        </div>
-
-        <span class="count" id="resultsCount"></span>
-      </div>
-
-      <div class="search-panel">
-        <label class="search-box">
-          <span class="search-symbol">⌕</span>
-          <input
-            id="search"
-            type="search"
-            placeholder="Search movies..."
-            autocomplete="off"
-          >
-        </label>
-
-        <button class="random-button" id="randomButton">
-          ↗ Random movie
-        </button>
-      </div>
-
-      <div class="alphabet" id="alphabet"></div>
-      <div class="movie-grid" id="movieGrid"></div>
-    </section>
-  </div>
+      <span class="section-count" id="resultCount"></span>
+    </div>
+    <div class="movie-row" id="resultRow"></div>
+  </section>
 </main>
 
-<footer>
-  <div class="container">movium. · A library for movie lovers.</div>
-</footer>
+<footer>movium. · Discover something worth watching.</footer>
 
-<!-- Embedded player instead of the old movie-title popup -->
-<div class="movie-overlay" id="movieOverlay">
-  <button
-    class="player-close"
-    id="movieOverlayClose"
-    aria-label="Close movie player"
-  >×</button>
-
-  <div class="player-container" id="playerContainer">
-    <div class="player-loading" id="playerLoading">
-      Select a movie to play.
+<div class="player-overlay" id="playerOverlay" aria-hidden="true">
+  <div class="player-topbar">
+    <div class="player-brand">movium<span style="color:#888">.</span></div>
+    <div class="player-controls">
+      <button class="player-control" id="pipButton" hidden>Picture in Picture</button>
+      <button class="player-control close" id="closePlayer" aria-label="Close player">×</button>
     </div>
   </div>
+
+  <div class="player-stage" id="playerStage">
+    <div class="player-message" id="playerMessage">
+      Choose a movie to begin.
+    </div>
+  </div>
+
+  <section class="player-info">
+    <div>
+      <h1 id="detailTitle"></h1>
+      <div class="detail-meta" id="detailMeta"></div>
+      <div class="detail-story" id="detailStory"></div>
+      <div class="detail-label">Cast</div>
+      <div class="detail-cast" id="detailCast"></div>
+      <div class="player-note">
+        Playback availability depends on the video's hosting and sharing settings.
+      </div>
+    </div>
+    <div>
+      <img class="detail-poster" id="detailPoster" alt="">
+    </div>
+  </section>
 </div>
 
 <script>
-/*
-====================================================
-MOVIUM MOVIE LIBRARY
-
-To add a movie, copy the template at the bottom
-of the movies list.
-
-title       = movie name
-year        = release year
-poster      = TMDB poster path
-backdrop    = TMDB backdrop path
-drive       = Google Drive share URL
-description = short description
-====================================================
-*/
-
-const IMAGE = "https://image.tmdb.org/t/p/";
-const POSTER_SIZE = "w500";
-const BACKDROP_SIZE = "w1280";
-
+const TMDB = "https://image.tmdb.org/t/p/";
 const movies = [
+  {
+    title: "Spider-Man: Brand New Day",
+    year: 2026,
+    poster: "",
+    backdrop: "",
+    category: ["Superheroes", "Featured"],
+    story: "Peter Parker faces a new chapter as Spider-Man. Add a verified synopsis when official plot details are available.",
+    cast: "Tom Holland, Zendaya, Jacob Batalon",
+    drive: ""
+  },
+  {
+    title: "Coyote vs. Acme",
+    year: 2026,
+    poster: "",
+    backdrop: "",
+    category: ["Comedy", "Animation"],
+    story: "Wile E. Coyote takes on the Acme Corporation in a comedy inspired by the classic Looney Tunes characters.",
+    cast: "Will Forte, John Cena, Lana Condor",
+    drive: ""
+  },
+  {
+    title: "Toy Story 5",
+    year: 2026,
+    poster: "",
+    backdrop: "",
+    category: ["Animation", "Family"],
+    story: "Woody, Buzz, and the gang face a new adventure as toys navigate a world increasingly shaped by technology.",
+    cast: "Tom Hanks, Tim Allen, Joan Cusack, Greta Lee",
+    drive: ""
+  },
+  {
+    title: "The Odyssey",
+    year: 2026,
+    poster: "",
+    backdrop: "",
+    category: ["Adventure", "Featured"],
+    story: "An epic adaptation of Homer's ancient tale follows Odysseus on his long and dangerous journey home after the Trojan War.",
+    cast: "Matt Damon, Anne Hathaway, Tom Holland, Zendaya",
+    drive: ""
+  },
+  {
+    title: "A Bug's Life",
+    year: 1998,
+    poster: "/Ah3J9OJVc2CNCuH2zMydXy9fmIC.jpg",
+    backdrop: "",
+    category: ["Animation", "Family"],
+    story: "An inventive ant recruits a group of circus bugs to help defend his colony against a gang of grasshoppers.",
+    cast: "Dave Foley, Kevin Spacey, Julia Louis-Dreyfus, Hayden Panettiere",
+    drive: ""
+  },
+  {
+    title: "A Charlie Brown Christmas",
+    year: 1965,
+    poster: "",
+    backdrop: "",
+    category: ["Holiday Favorites", "Animation", "Family"],
+    story: "Charlie Brown searches for the meaning of Christmas while directing a holiday play with his friends.",
+    cast: "Peter Robbins, Christopher Shea, Tracy Stratford",
+    drive: ""
+  },
+  {
+    title: "A Goofy Movie",
+    year: 1995,
+    poster: "",
+    backdrop: "",
+    category: ["Animation", "Family"],
+    story: "Goofy takes his son Max on a road trip, hoping to reconnect while Max has plans of his own.",
+    cast: "Bill Farmer, Jason Marsden, Jim Cummings, Kellie Martin",
+    drive: ""
+  },
+  {
+    title: "Ant-Man and the Wasp: Quantumania",
+    year: 2023,
+    poster: "",
+    backdrop: "",
+    category: ["Superheroes", "Marvel"],
+    story: "Scott Lang and his family explore the Quantum Realm and encounter a powerful new threat.",
+    cast: "Paul Rudd, Evangeline Lilly, Jonathan Majors, Kathryn Newton",
+    drive: ""
+  },
+  {
+    title: "Avengers: Endgame",
+    year: 2019,
+    poster: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+    backdrop: "",
+    category: ["Avengers", "Superheroes", "Marvel"],
+    story: "The surviving Avengers work together to reverse the devastating consequences of Thanos's actions.",
+    cast: "Robert Downey Jr., Chris Evans, Mark Ruffalo, Scarlett Johansson, Chris Hemsworth",
+    drive: ""
+  },
+  {
+    title: "Avengers: Infinity War",
+    year: 2018,
+    poster: "/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+    backdrop: "",
+    category: ["Avengers", "Superheroes", "Marvel"],
+    story: "The Avengers and their allies face a race against time to stop Thanos from collecting the Infinity Stones.",
+    cast: "Robert Downey Jr., Chris Hemsworth, Mark Ruffalo, Chris Evans, Josh Brolin",
+    drive: ""
+  },
   {
     title: "Interstellar",
     year: 2014,
     poster: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     backdrop: "/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
-    drive: "https://drive.google.com/file/d/1rjx6-12dB11LWwj5jFEFX2QMuZiEVUFk/view",
-    description: "A journey beyond the stars."
+    category: ["Science Fiction", "Featured"],
+    story: "A team of explorers travels beyond this galaxy to discover whether mankind has a future among the stars.",
+    cast: "Matthew McConaughey, Anne Hathaway, Jessica Chastain, Michael Caine",
+    drive: "https://drive.google.com/file/d/1rjx6-12dB11LWwj5jFEFX2QMuZiEVUFk/view"
   },
-
   {
     title: "Whiplash",
     year: 2014,
     poster: "/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
     backdrop: "/6bbZ6XyvgfjhQwbplnUh1LSj1ky.jpg",
-    drive: "https://drive.google.com/file/d/1NsMv5rGihaprmvDovnW4RT7_R15G8GE7/view",
-    description: "An ambitious drummer pushes himself to his limits."
+    category: ["Drama", "Featured"],
+    story: "A determined young drummer enters a demanding music conservatory, where an uncompromising instructor pushes him to his limits.",
+    cast: "Miles Teller, J.K. Simmons, Paul Reiser, Melissa Benoist",
+    drive: "https://drive.google.com/file/d/1NsMv5rGihaprmvDovnW4RT7_R15G8GE7/view"
   }
-
-  /*
-  ==================================================
-  MOVIE TEMPLATE — COPY THIS OBJECT TO ADD A MOVIE
-
-  ,
-  {
-    title: "Movie Name",
-    year: 2025,
-    poster: "/POSTER_IMAGE_PATH.jpg",
-    backdrop: "/BACKDROP_IMAGE_PATH.jpg",
-    drive: "",
-    description: "A short description of the movie."
-  }
-
-  ==================================================
-  */
 ];
 
-const featuredTitles = [
-  "Interstellar",
-  "Whiplash"
+const collections = [
+  { title: "Avengers", subtitle: "Earth's mightiest heroes", category: "Avengers" },
+  { title: "Holiday Favorites", subtitle: "Movies for the holiday season", category: "Holiday Favorites" },
+  { title: "Animation & Family", subtitle: "Stories for everyone", category: "Animation" },
+  { title: "Superheroes", subtitle: "Heroes, villains, and big adventures", category: "Superheroes" },
+  { title: "Featured Films", subtitle: "A selection from the library", category: "Featured" },
+  { title: "Explore Movies", subtitle: "The full movie collection", category: "All" }
 ];
-
-const letters = ["All", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 
 const $ = id => document.getElementById(id);
-
-let selectedLetter = "All";
-let currentMovie = null;
-
-/* Image URLs */
+let currentMovie = movies.find(movie => movie.title === "Interstellar") || movies[0];
 
 function posterURL(movie) {
-  if (movie.poster && movie.poster.startsWith("/")) {
-    return IMAGE + POSTER_SIZE + movie.poster;
-  }
-
-  return `https://placehold.co/500x750/171717/ffffff?text=${encodeURIComponent(movie.title)}`;
+  return movie.poster
+    ? TMDB + "w500" + movie.poster
+    : "";
 }
 
 function backdropURL(movie) {
-  if (movie.backdrop && movie.backdrop.startsWith("/")) {
-    return IMAGE + BACKDROP_SIZE + movie.backdrop;
-  }
-
-  return "";
+  return movie.backdrop
+    ? TMDB + "w1280" + movie.backdrop
+    : posterURL(movie);
 }
 
-/* Movie cards */
+function setText(id, value) {
+  $(id).textContent = value || "";
+}
 
-function makeCard(movie) {
+function createCard(movie) {
   const card = document.createElement("article");
-
-  card.className = "movie";
+  card.className = "movie-card";
   card.tabIndex = 0;
   card.setAttribute("role", "button");
-  card.setAttribute(
-    "aria-label",
-    `${movie.title}, ${movie.year}`
-  );
+  card.setAttribute("aria-label", `Open ${movie.title}`);
 
   const wrap = document.createElement("div");
   wrap.className = "poster-wrap";
 
-  const img = document.createElement("img");
-  img.className = "poster";
-  img.src = posterURL(movie);
-  img.alt = `${movie.title} poster`;
-  img.loading = "lazy";
+  const imageURL = posterURL(movie);
 
-  img.onerror = () => {
-    img.onerror = null;
-    img.src =
-      `https://placehold.co/500x750/171717/ffffff?text=${encodeURIComponent(movie.title)}`;
-  };
+  if (imageURL) {
+    const image = document.createElement("img");
+    image.className = "poster";
+    image.src = imageURL;
+    image.alt = `${movie.title} poster`;
+    image.loading = "lazy";
+    image.onerror = () => {
+      image.remove();
+      const fallback = document.createElement("div");
+      fallback.className = "poster-fallback";
+      fallback.textContent = movie.title;
+      wrap.appendChild(fallback);
+    };
+    wrap.appendChild(image);
+  } else {
+    const fallback = document.createElement("div");
+    fallback.className = "poster-fallback";
+    fallback.textContent = movie.title;
+    wrap.appendChild(fallback);
+  }
 
   const title = document.createElement("div");
   title.className = "movie-title";
@@ -779,11 +830,8 @@ function makeCard(movie) {
   year.className = "movie-year";
   year.textContent = movie.year;
 
-  wrap.appendChild(img);
   card.append(wrap, title, year);
-
   card.addEventListener("click", () => openMovie(movie));
-
   card.addEventListener("keydown", event => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -794,237 +842,232 @@ function makeCard(movie) {
   return card;
 }
 
-/* Featured films */
+function renderCollections() {
+  const root = $("collections");
+  root.replaceChildren();
 
-function renderFeatured() {
-  $("featuredGrid").replaceChildren();
+  collections.forEach(collection => {
+    const section = document.createElement("section");
+    section.className = "section";
 
-  featuredTitles.forEach(title => {
-    const movie = movies.find(
-      item => item.title.toLowerCase() === title.toLowerCase()
-    );
+    const heading = document.createElement("div");
+    heading.className = "section-head";
 
-    if (movie) {
-      $("featuredGrid").appendChild(makeCard(movie));
+    const headingContent = document.createElement("div");
+    const title = document.createElement("h2");
+    title.textContent = collection.title;
+
+    const subtitle = document.createElement("p");
+    subtitle.className = "section-subtitle";
+    subtitle.textContent = collection.subtitle;
+
+    headingContent.append(title, subtitle);
+    heading.appendChild(headingContent);
+
+    const row = document.createElement("div");
+    row.className = "movie-row";
+
+    const list = collection.category === "All"
+      ? [...movies].sort((a, b) => a.title.localeCompare(b.title))
+      : movies.filter(movie => movie.category.includes(collection.category));
+
+    list.forEach(movie => row.appendChild(createCard(movie)));
+
+    if (!list.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "More movies coming soon.";
+      row.appendChild(empty);
     }
+
+    section.append(heading, row);
+    root.appendChild(section);
   });
 }
-
-/* A-Z filters */
-
-function renderAlphabet() {
-  $("alphabet").replaceChildren();
-
-  letters.forEach(letter => {
-    const button = document.createElement("button");
-
-    button.className =
-      "letter" + (selectedLetter === letter ? " active" : "");
-
-    button.textContent = letter;
-    button.setAttribute(
-      "aria-pressed",
-      selectedLetter === letter ? "true" : "false"
-    );
-
-    button.addEventListener("click", () => {
-      selectedLetter = letter;
-      renderAlphabet();
-      renderMovies();
-    });
-
-    $("alphabet").appendChild(button);
-  });
-}
-
-/* Main movie library */
-
-function renderMovies() {
-  const query = $("search").value.trim().toLowerCase();
-
-  const filtered = movies
-    .filter(movie => movie.title.toLowerCase().includes(query))
-    .filter(movie =>
-      selectedLetter === "All" ||
-      movie.title.toUpperCase().startsWith(selectedLetter)
-    )
-    .sort((a, b) => a.title.localeCompare(b.title));
-
-  $("movieGrid").replaceChildren();
-
-  $("libraryTitle").textContent = query
-    ? "Search results"
-    : selectedLetter === "All"
-      ? "Explore movies"
-      : `Movies starting with ${selectedLetter}`;
-
-  $("resultsCount").textContent =
-    `${filtered.length} ${filtered.length === 1 ? "movie" : "movies"}`;
-
-  if (filtered.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.textContent = "No movies found. Try another search.";
-
-    $("movieGrid").appendChild(empty);
-    return;
-  }
-
-  filtered.forEach(movie => {
-    $("movieGrid").appendChild(makeCard(movie));
-  });
-}
-
-/* Featured banner */
 
 function setHero(movie) {
   currentMovie = movie;
-
-  $("heroTitle").textContent = movie.title;
-  $("heroMeta").textContent = `${movie.year} · Featured film`;
-
-  $("heroDescription").textContent =
-    movie.description || `${movie.title}, released in ${movie.year}.`;
+  setText("heroTitle", movie.title);
+  setText("heroMeta", `${movie.year} · ${movie.category[0] || "Movie"}`);
+  setText("heroDescription", movie.story);
 
   const backdrop = $("heroBackdrop");
   const url = backdropURL(movie);
 
   if (url) {
-    backdrop.style.display = "block";
     backdrop.src = url;
-
+    backdrop.style.display = "block";
     backdrop.onerror = () => {
-      backdrop.onerror = null;
       backdrop.style.display = "none";
     };
   } else {
-    backdrop.removeAttribute("src");
     backdrop.style.display = "none";
   }
 }
 
-/* Embedded Google Drive player */
-
 function openMovie(movie) {
   currentMovie = movie;
 
-  const overlay = $("movieOverlay");
-  const container = $("playerContainer");
+  setText("detailTitle", movie.title);
+  setText("detailMeta", `${movie.year} · ${movie.category.join(" · ")}`);
+  setText("detailStory", movie.story);
+  setText("detailCast", movie.cast);
 
-  // Stop any previously playing movie.
-  container.replaceChildren();
-  container.classList.remove("has-video");
+  const poster = $("detailPoster");
+  if (posterURL(movie)) {
+    poster.src = posterURL(movie);
+    poster.style.display = "block";
+  } else {
+    poster.removeAttribute("src");
+    poster.style.display = "none";
+  }
 
-  const loading = document.createElement("div");
-  loading.className = "player-loading";
-  loading.textContent = "Loading movie...";
+  const stage = $("playerStage");
+  stage.replaceChildren();
 
-  container.appendChild(loading);
+  const message = document.createElement("div");
+  message.className = "player-message";
+  message.id = "playerMessage";
 
-  // Accept a Google Drive file URL and extract its ID.
+  /*
+    Set movie.drive to an authorized Google Drive video URL
+    or a direct video file URL.
+
+    Drive embeds require the file to be accessible to the viewer.
+    Picture-in-Picture for embedded players depends on the host.
+  */
+
   const driveURL = movie.drive || "";
-
-  const match = driveURL.match(
+  const driveMatch = driveURL.match(
     /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
   );
 
-  if (!match) {
-    loading.textContent = "Movie unavailable";
-  } else {
+  if (driveMatch) {
     const iframe = document.createElement("iframe");
-
-    iframe.src =
-      `https://drive.google.com/file/d/${match[1]}/preview`;
-
+    iframe.src = `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
     iframe.title = `${movie.title} video player`;
-    iframe.allow =
-      "autoplay; encrypted-media; fullscreen; picture-in-picture";
+    iframe.allow = "autoplay; encrypted-media; fullscreen; picture-in-picture";
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    stage.appendChild(iframe);
 
-    iframe.addEventListener("load", () => {
-      container.classList.add("has-video");
-    });
-
-    container.appendChild(iframe);
+    message.textContent = "If playback doesn't load, check the video's sharing settings.";
+  } else if (/^https?:\/\//i.test(driveURL) && /\.(mp4|webm|ogg)(\?.*)?$/i.test(driveURL)) {
+    const video = document.createElement("video");
+    video.src = driveURL;
+    video.controls = true;
+    video.autoplay = false;
+    video.playsInline = true;
+    video.preload = "metadata";
+    video.id = "nativeVideo";
+    stage.appendChild(video);
+  } else {
+    message.textContent = "No playable video is configured for this title yet.";
   }
 
-  overlay.classList.add("open");
-  document.body.classList.add("overlay-active");
-  $("movieOverlayClose").focus();
+  stage.appendChild(message);
+
+  // The message stays visible until a native video is ready.
+  const nativeVideo = $("nativeVideo");
+  if (nativeVideo) {
+    nativeVideo.addEventListener("loadedmetadata", () => message.classList.add("hidden"));
+    nativeVideo.addEventListener("error", () => {
+      message.textContent = "This video could not be loaded. Check the URL and permissions.";
+      message.classList.remove("hidden");
+    });
+  } else if (driveMatch) {
+    // An iframe cannot reliably report whether the embedded video itself plays.
+    message.textContent = "";
+    message.classList.add("hidden");
+  }
+
+  $("playerOverlay").classList.add("open");
+  $("playerOverlay").setAttribute("aria-hidden", "false");
+  document.body.classList.add("player-open");
+
+  updatePipButton();
 }
 
-/* Close player and stop playback */
+function closePlayer() {
+  $("playerOverlay").classList.remove("open");
+  $("playerOverlay").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("player-open");
 
-function closeMovie() {
-  $("movieOverlay").classList.remove("open");
-  document.body.classList.remove("overlay-active");
-
-  const container = $("playerContainer");
-
-  // Removing the iframe stops its video.
-  container.replaceChildren();
-  container.classList.remove("has-video");
+  // Removing the player stops any video that was playing.
+  $("playerStage").replaceChildren();
+  $("pipButton").hidden = true;
 }
 
-/* Search */
+function updatePipButton() {
+  const video = $("nativeVideo");
+  const pip = $("pipButton");
 
-$("search").addEventListener("input", () => {
-  selectedLetter = "All";
-  renderAlphabet();
-  renderMovies();
-});
-
-/* Random movie */
-
-$("randomButton").addEventListener("click", () => {
-  const query = $("search").value.trim().toLowerCase();
-
-  const candidates = movies.filter(movie =>
-    movie.title.toLowerCase().includes(query) &&
-    (
-      selectedLetter === "All" ||
-      movie.title.toUpperCase().startsWith(selectedLetter)
-    )
+  pip.hidden = !(
+    video &&
+    document.pictureInPictureEnabled &&
+    !video.disablePictureInPicture
   );
+}
 
-  if (!candidates.length) return;
+$("pipButton").addEventListener("click", async () => {
+  const video = $("nativeVideo");
+  if (!video) return;
 
-  const movie =
-    candidates[Math.floor(Math.random() * candidates.length)];
-
-  openMovie(movie);
+  try {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture();
+    } else if (document.pictureInPictureEnabled) {
+      await video.requestPictureInPicture();
+    }
+  } catch (error) {
+    console.error("Picture-in-Picture unavailable:", error);
+  }
 });
 
-/* Featured buttons */
-
-$("heroPlay").addEventListener("click", () => {
-  if (currentMovie) openMovie(currentMovie);
-});
-
-$("heroDetails").addEventListener("click", () => {
-  if (currentMovie) openMovie(currentMovie);
-});
-
-/* Close player */
-
-$("movieOverlayClose").addEventListener("click", closeMovie);
+$("heroPlay").addEventListener("click", () => openMovie(currentMovie));
+$("heroInfo").addEventListener("click", () => openMovie(currentMovie));
+$("closePlayer").addEventListener("click", closePlayer);
 
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    closeMovie();
-  }
+  if (event.key === "Escape") closePlayer();
 });
 
-/* Initialize the site */
+$("search").addEventListener("input", () => {
+  const query = $("search").value.trim().toLowerCase();
+  const resultsSection = $("searchResults");
+  const resultsRow = $("resultRow");
+  resultsRow.replaceChildren();
 
-renderAlphabet();
-renderFeatured();
-renderMovies();
+  if (!query) {
+    resultsSection.hidden = true;
+    $("collections").style.display = "";
+    return;
+  }
 
-setHero(
-  movies.find(movie => movie.title === "Interstellar") || movies[0]
-);
+  $("collections").style.display = "none";
+  resultsSection.hidden = false;
+
+  const results = movies.filter(movie =>
+    movie.title.toLowerCase().includes(query) ||
+    movie.category.some(category => category.toLowerCase().includes(query)) ||
+    movie.cast.toLowerCase().includes(query)
+  );
+
+  setText("resultCount", `${results.length} ${results.length === 1 ? "movie" : "movies"}`);
+
+  if (!results.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No movies found. Try another search.";
+    resultsRow.appendChild(empty);
+    return;
+  }
+
+  results.forEach(movie => resultsRow.appendChild(createCard(movie)));
+});
+
+renderCollections();
+setHero(currentMovie);
 </script>
 </body>
 </html>
