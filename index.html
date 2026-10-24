@@ -1,0 +1,669 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0c0c0c">
+  <title>Movium — Discover Movies</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #0c0c0c;
+      color: #f5f5f5;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1200px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    header {
+      height: 76px;
+      border-bottom: 1px solid #252525;
+    }
+
+    .nav {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 750;
+      letter-spacing: -1.4px;
+    }
+
+    .logo span {
+      color: #0a84ff;
+    }
+
+    .nav-label {
+      color: #929292;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+    }
+
+    main {
+      padding: 34px 0 65px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 38px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      background: #151515;
+      border: 1px solid #303030;
+      border-radius: 7px;
+      padding: 0 15px;
+      min-width: 0;
+    }
+
+    .search-box span {
+      color: #929292;
+      font-size: 20px;
+    }
+
+    #search {
+      width: 100%;
+      height: 48px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-size: 14px;
+    }
+
+    #search::placeholder {
+      color: #858585;
+    }
+
+    .random-button {
+      border: 0;
+      border-radius: 7px;
+      background: #0a84ff;
+      color: white;
+      padding: 0 17px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .random-button:hover {
+      background: #0876e5;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: -0.5px;
+    }
+
+    .subheading {
+      margin: 7px 0 0;
+      color: #929292;
+      font-size: 13px;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 25px 17px;
+    }
+
+    .movie {
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .poster-wrap {
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #191919;
+      border: 1px solid #242424;
+    }
+
+    .poster {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 180ms ease;
+    }
+
+    .movie:hover .poster {
+      transform: scale(1.035);
+    }
+
+    .movie-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-top: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .movie-year {
+      font-size: 12px;
+      color: #929292;
+      margin-top: 4px;
+    }
+
+    .featured-section {
+      margin-bottom: 43px;
+    }
+
+    .alphabet {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin: 19px 0 26px;
+    }
+
+    .letter {
+      min-width: 31px;
+      height: 32px;
+      padding: 0 8px;
+      background: #171717;
+      border: 1px solid #292929;
+      border-radius: 5px;
+      color: #bdbdbd;
+      font-size: 12px;
+    }
+
+    .letter:hover {
+      border-color: #0a84ff;
+      color: white;
+    }
+
+    .letter.active {
+      background: #0a84ff;
+      border-color: #0a84ff;
+      color: white;
+    }
+
+    .results-label {
+      font-size: 12px;
+      color: #929292;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      color: #929292;
+      padding: 38px 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    footer {
+      border-top: 1px solid #252525;
+      padding: 24px 0;
+      color: #777;
+      font-size: 12px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.82);
+      z-index: 10;
+    }
+
+    .modal.open {
+      display: grid;
+    }
+
+    .modal-card {
+      position: relative;
+      display: flex;
+      gap: 22px;
+      width: min(480px, 100%);
+      padding: 22px;
+      border: 1px solid #303030;
+      border-radius: 9px;
+      background: #151515;
+    }
+
+    .modal-poster {
+      width: 42%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .modal-info {
+      padding-top: 20px;
+    }
+
+    .modal-info h2 {
+      font-size: 23px;
+      line-height: 1.3;
+    }
+
+    .modal-info p {
+      color: #929292;
+      font-size: 14px;
+    }
+
+    .close {
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      background: none;
+      color: white;
+      border: 0;
+      font-size: 23px;
+    }
+
+    @media (max-width: 900px) {
+      .movie-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .featured-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        width: calc(100% - 28px);
+      }
+
+      header {
+        height: 65px;
+      }
+
+      .logo {
+        font-size: 24px;
+      }
+
+      .nav-label {
+        font-size: 10px;
+      }
+
+      main {
+        padding-top: 23px;
+      }
+
+      .search-row {
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .search-box {
+        flex-basis: 100%;
+      }
+
+      .random-button {
+        height: 42px;
+        width: 100%;
+      }
+
+      .featured-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .movie-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px 11px;
+      }
+
+      .movie-title {
+        font-size: 12px;
+      }
+
+      h2 {
+        font-size: 19px;
+      }
+
+      .letter {
+        min-width: 29px;
+        padding: 0 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="logo">movium<span>.</span></div>
+      <div class="nav-label">YOUR MOVIE LIBRARY</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="search-row">
+      <label class="search-box">
+        <span>⌕</span>
+        <input id="search" type="search"
+          placeholder="Search movies..."
+          autocomplete="off"
+          aria-label="Search movies">
+      </label>
+      <button class="random-button" id="randomButton">
+        ↗ Random movie
+      </button>
+    </div>
+
+    <section class="featured-section" id="featuredSection">
+      <div class="section-heading">
+        <div>
+          <h2>Featured films</h2>
+          <p class="subheading">Movies worth discovering.</p>
+        </div>
+      </div>
+      <div class="featured-grid" id="featuredGrid"></div>
+    </section>
+
+    <section>
+      <div class="section-heading">
+        <div>
+          <h2 id="libraryTitle">Browse movies</h2>
+          <p class="subheading">Explore the collection, A to Z.</p>
+        </div>
+        <span class="results-label" id="resultsCount"></span>
+      </div>
+
+      <div class="alphabet" id="alphabet"></div>
+      <div class="movie-grid" id="movieGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Movium · Discover your next favorite movie.
+    </div>
+  </footer>
+
+  <div class="modal" id="movieModal" role="dialog"
+    aria-modal="true" aria-label="Movie details">
+    <div class="modal-card">
+      <button class="close" id="closeModal" aria-label="Close">×</button>
+      <img class="modal-poster" id="modalPoster" alt="">
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <p id="modalYear"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const movies = [
+      { title: "A Quiet Place", year: 2018, id: "wrJ1nxD6Yf" },
+      { title: "Avatar", year: 2009, id: "kyeqWdyUXW" },
+      { title: "Barbie", year: 2023, id: "iuFNMS8s0Sk" },
+      { title: "Black Panther", year: 2018, id: "uxzzx7eBaFw" },
+      { title: "Coco", year: 2017, id: "Ga6RYejo6Hk" },
+      { title: "Dune", year: 2021, id: "d5NXSklXo3E" },
+      { title: "Dune: Part Two", year: 2024, id: "Way9Dexny3w" },
+      { title: "Everything Everywhere All at Once", year: 2022, id: "wxN1T1uxQ2g" },
+      { title: "Fight Club", year: 1999, id: "SUXWAEX2jlg" },
+      { title: "Frozen", year: 2013, id: "TbQm5doF_Uc" },
+      { title: "Get Out", year: 2017, id: "DzfpyUB60YY" },
+      { title: "Gladiator", year: 2000, id: "owK1qxDselE" },
+      { title: "Harry Potter and the Philosopher's Stone", year: 2001, id: "VyHV0BRtdxo" },
+      { title: "Inception", year: 2010, id: "YoHD9XEInc0" },
+      { title: "Interstellar", year: 2014, id: "zSWdZVtXT7E" },
+      { title: "Joker", year: 2019, id: "zAGVQLHvwOY" },
+      { title: "John Wick", year: 2014, id: "2AUmvWm5ZDQ" },
+      { title: "Kung Fu Panda", year: 2008, id: "PXi3Mv6KMzY" },
+      { title: "La La Land", year: 2016, id: "0pdqf4P9MB8" },
+      { title: "Logan", year: 2017, id: "Div0iP65aZo" },
+      { title: "Moana", year: 2016, id: "LKFuXETZUsI" },
+      { title: "Oppenheimer", year: 2023, id: "uYPbbksJxIg" },
+      { title: "Parasite", year: 2019, id: "5xH0HfJHsaY" },
+      { title: "Pulp Fiction", year: 1994, id: "s7EdQ4FqbhY" },
+      { title: "Shrek", year: 2001, id: "CwXOrWvPBPk" },
+      { title: "Spider-Man: No Way Home", year: 2021, id: "JfVOs4VSpmA" },
+      { title: "The Batman", year: 2022, id: "mqqft2x_Aa4" },
+      { title: "The Dark Knight", year: 2008, id: "EXeTwQWrcwY" },
+      { title: "The Incredibles", year: 2004, id: "sFv7Gqv9M" },
+      { title: "The Lion King", year: 1994, id: "lFzVJEksoDY" },
+      { title: "The Matrix", year: 1999, id: "vKQi3bBA1y8" },
+      { title: "The Shawshank Redemption", year: 1994, id: "6hB3S9bIaco" },
+      { title: "Titanic", year: 1997, id: "kVrqfYjkTdQ" },
+      { title: "Top Gun: Maverick", year: 2022, id: "giXco2jaZ_4" },
+      { title: "Up", year: 2009, id: "ORFWdXl_zJ4" },
+      { title: "WALL-E", year: 2008, id: "alIq_wG9FNk" },
+      { title: "Whiplash", year: 2014, id: "7d_jQycdQGo" },
+      { title: "Your Name", year: 2016, id: "xU47nhruN-Q" },
+      { title: "Zootopia", year: 2016, id: "jWM0ct-OLsM" }
+    ];
+
+    // Featured films are selected here.
+    const featuredTitles = [
+      "Interstellar",
+      "The Batman",
+      "Oppenheimer",
+      "Inception",
+      "Spider-Man: No Way Home"
+    ];
+
+    const poster = movie =>
+      `https://img.youtube.com/vi/${movie.id}/mqdefault.jpg`;
+
+    // Replace these thumbnail URLs with movie poster URLs
+    // from a movie database when connecting the full catalog.
+
+    const letters = [
+      "All", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    ];
+
+    const searchInput = document.getElementById("search");
+    const movieGrid = document.getElementById("movieGrid");
+    const featuredGrid = document.getElementById("featuredGrid");
+    const alphabet = document.getElementById("alphabet");
+    const resultsCount = document.getElementById("resultsCount");
+    const libraryTitle = document.getElementById("libraryTitle");
+    const featuredSection = document.getElementById("featuredSection");
+    const movieModal = document.getElementById("movieModal");
+
+    let selectedLetter = "All";
+
+    function createMovieCard(movie) {
+      const card = document.createElement("article");
+      card.className = "movie";
+      card.tabIndex = 0;
+      card.setAttribute("aria-label", `${movie.title}, ${movie.year}`);
+
+      const wrap = document.createElement("div");
+      wrap.className = "poster-wrap";
+
+      const img = document.createElement("img");
+      img.className = "poster";
+      img.src = poster(movie);
+      img.alt = `${movie.title} poster`;
+      img.loading = "lazy";
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = "https://placehold.co/400x600/191919/ffffff?text=Movium";
+      };
+
+      const title = document.createElement("div");
+      title.className = "movie-title";
+      title.textContent = movie.title;
+
+      const year = document.createElement("div");
+      year.className = "movie-year";
+      year.textContent = movie.year;
+
+      wrap.appendChild(img);
+      card.append(wrap, title, year);
+
+      card.addEventListener("click", () => openMovie(movie));
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openMovie(movie);
+        }
+      });
+
+      return card;
+    }
+
+    function renderAlphabet() {
+      alphabet.replaceChildren();
+
+      letters.forEach(letter => {
+        const button = document.createElement("button");
+        button.className =
+          "letter" + (selectedLetter === letter ? " active" : "");
+        button.textContent = letter;
+        button.setAttribute("aria-pressed", selectedLetter === letter);
+
+        button.addEventListener("click", () => {
+          selectedLetter = letter;
+          renderAlphabet();
+          renderMovies();
+        });
+
+        alphabet.appendChild(button);
+      });
+    }
+
+    function renderFeatured() {
+      featuredGrid.replaceChildren();
+
+      const featured = featuredTitles
+        .map(title => movies.find(movie => movie.title === title))
+        .filter(Boolean);
+
+      featured.forEach(movie => {
+        featuredGrid.appendChild(createMovieCard(movie));
+      });
+    }
+
+    function renderMovies() {
+      const query = searchInput.value.trim().toLowerCase();
+
+      const filtered = movies
+        .filter(movie => movie.title.toLowerCase().includes(query))
+        .filter(movie =>
+          selectedLetter === "All" ||
+          movie.title.toUpperCase().startsWith(selectedLetter)
+        )
+        .sort((a, b) =>
+          a.title.localeCompare(b.title, undefined, {
+            sensitivity: "base"
+          })
+        );
+
+      movieGrid.replaceChildren();
+      libraryTitle.textContent = query
+        ? "Search results"
+        : selectedLetter === "All"
+          ? "Browse movies"
+          : `Movies beginning with ${selectedLetter}`;
+
+      resultsCount.textContent = `${filtered.length} movies`;
+
+      if (filtered.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No movies found. Try another search.";
+        movieGrid.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach(movie => {
+        movieGrid.appendChild(createMovieCard(movie));
+      });
+    }
+
+    function openMovie(movie) {
+      document.getElementById("modalPoster").src = poster(movie);
+      document.getElementById("modalPoster").alt = movie.title;
+      document.getElementById("modalTitle").textContent = movie.title;
+      document.getElementById("modalYear").textContent =
+        `Released in ${movie.year}`;
+      movieModal.classList.add("open");
+      document.getElementById("closeModal").focus();
+    }
+
+    function closeMovie() {
+      movieModal.classList.remove("open");
+    }
+
+    searchInput.addEventListener("input", () => {
+      selectedLetter = "All";
+      renderAlphabet();
+      renderMovies();
+      featuredSection.style.display =
+        searchInput.value.trim() ? "none" : "";
+    });
+
+    document.getElementById("randomButton").addEventListener("click", () => {
+      const query = searchInput.value.trim().toLowerCase();
+
+      const available = movies.filter(movie =>
+        movie.title.toLowerCase().includes(query) &&
+        (selectedLetter === "All" ||
+          movie.title.toUpperCase().startsWith(selectedLetter))
+      );
+
+      if (available.length === 0) {
+        alert("No movies match your current filters.");
+        return;
+      }
+
+      const movie = available[Math.floor(Math.random() * available.length)];
+      openMovie(movie);
+    });
+
+    document.getElementById("closeModal").addEventListener("click", closeMovie);
+
+    movieModal.addEventListener("click", event => {
+      if (event.target === movieModal) closeMovie();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMovie();
+    });
+
+    renderAlphabet();
+    renderFeatured();
+    renderMovies();
+  </script>
+</body>
+</html>
