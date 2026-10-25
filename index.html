@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0c0c0c">
 <title>Movium</title>
 
 <style>
@@ -17,7 +17,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: #383838 #0c0c0c;
+}
 
 body {
   margin: 0;
@@ -27,13 +31,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-body.player-open { overflow: hidden; }
+body.player-open,
+body.searching { overflow: hidden; }
+
 button, input { font: inherit; }
 button { cursor: pointer; }
 
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
+input:focus-visible,
+.movie-card:focus-visible {
   outline: 2px solid white;
   outline-offset: 3px;
 }
@@ -42,8 +49,14 @@ header {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: #0c0c0c;
+  background: rgba(12, 12, 12, .97);
   border-bottom: 1px solid #202020;
+  backdrop-filter: blur(14px);
+  transition: background .3s ease;
+}
+
+body.searching header {
+  background: rgb(1, 1, 1);
 }
 
 .nav {
@@ -77,6 +90,12 @@ header {
   background: #171717;
   border: 1px solid #303030;
   border-radius: 5px;
+  transition: border-color .18s ease, background .18s ease;
+}
+
+.search-wrap:focus-within {
+  border-color: #555;
+  background: #1a1a1a;
 }
 
 .search-wrap svg {
@@ -118,6 +137,7 @@ main {
   margin-bottom: 38px;
   overflow: hidden;
   isolation: isolate;
+  background: #111;
 }
 
 .hero-backdrop {
@@ -139,10 +159,11 @@ main {
   background:
     linear-gradient(0deg, #0c0c0c 0%, rgba(12,12,12,.8) 13%, transparent 70%),
     linear-gradient(90deg, rgba(12,12,12,.9), rgba(12,12,12,.35) 45%, transparent 85%);
+  pointer-events: none;
 }
 
 .hero-content {
-  max-width: 580px;
+  max-width: 620px;
   padding: 0 0 46px 6px;
 }
 
@@ -159,6 +180,7 @@ main {
   font-size: clamp(38px, 5vw, 66px);
   letter-spacing: -2px;
   line-height: 1.03;
+  overflow-wrap: anywhere;
 }
 
 .hero-meta {
@@ -177,18 +199,17 @@ main {
 
 .hero-actions {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
-.primary-btn, .secondary-btn {
+.primary-btn {
   border-radius: 5px;
   padding: 12px 18px;
   font-size: 13px;
   font-weight: 700;
-}
-
-.primary-btn {
+  transition: background .18s ease, border-color .18s ease;
   color: #111;
   background: #fff;
   border: 1px solid #fff;
@@ -196,13 +217,37 @@ main {
 
 .primary-btn:hover { background: #ddd; }
 
-.secondary-btn {
-  color: #fff;
-  background: #222;
-  border: 1px solid #444;
+.play-btn {
+  width: 260px;
+  max-width: calc(100% - 52px);
+  text-align: center;
 }
 
-.secondary-btn:hover { background: #333; }
+.next-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #fff;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  opacity: .8;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.next-btn svg {
+  width: 26px;
+  height: 26px;
+}
+
+.next-btn:hover {
+  opacity: 1;
+  transform: translateX(2px);
+}
 
 .section {
   margin-top: 40px;
@@ -219,14 +264,16 @@ main {
 
 .section-head h2 {
   margin: 0;
-  font-size: 21px;
-  letter-spacing: -.5px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.6px;
 }
 
 .section-subtitle {
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 12px;
+  line-height: 1.5;
 }
 
 .section-count {
@@ -239,14 +286,16 @@ main {
   display: grid;
   grid-auto-columns: minmax(145px, 190px);
   grid-auto-flow: column;
-  gap: 16px;
+  gap: 17px;
   overflow-x: auto;
-  padding: 2px 2px 12px;
+  padding: 3px 2px 14px;
   scrollbar-width: thin;
   scrollbar-color: #383838 transparent;
+  scroll-snap-type: x proximity;
 }
 
 .movie-row::-webkit-scrollbar { height: 5px; }
+
 .movie-row::-webkit-scrollbar-thumb {
   background: #383838;
   border-radius: 4px;
@@ -256,43 +305,21 @@ main {
   min-width: 0;
   cursor: pointer;
   outline-offset: 3px;
+  scroll-snap-align: start;
 }
 
 .poster-wrap {
   position: relative;
   aspect-ratio: 2 / 3;
   overflow: hidden;
-  border-radius: 4px;
-  border: 1px solid #282828;
+  border-radius: 5px;
+  border: 1px solid #292929;
   background: #181818;
+  transition: border-color .2s ease;
 }
 
-.rating-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  padding: 4px 6px;
-  border: 1px solid #ff6b6b;
-  border-radius: 3px;
-  background: #260c0c;
-  color: #ffb1b1;
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: .5px;
-}
-
-.movie-rating {
-  display: inline-block;
-  margin-left: 7px;
-  padding: 3px 5px;
-  border: 1px solid #633333;
-  border-radius: 3px;
-  color: #ffb1b1;
-  font-size: 10px;
-  font-weight: 700;
-  vertical-align: 1px;
+.movie-card:hover .poster-wrap {
+  border-color: #555;
 }
 
 .poster {
@@ -300,12 +327,12 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .2s ease, opacity .2s ease;
+  transition: transform .25s ease, opacity .25s ease;
 }
 
 .movie-card:hover .poster {
-  transform: scale(1.04);
-  opacity: .84;
+  transform: scale(1.035);
+  opacity: .9;
 }
 
 .poster-fallback {
@@ -319,19 +346,27 @@ main {
   font-size: 16px;
   line-height: 1.4;
   height: 100%;
+  background: #181818;
 }
 
 .movie-title {
-  margin-top: 9px;
+  margin-top: 10px;
   font-size: 13px;
   line-height: 1.45;
   font-weight: 600;
+  letter-spacing: -.15px;
+  overflow-wrap: anywhere;
 }
 
 .movie-year {
-  margin-top: 4px;
-  color: #929292;
+  margin-top: 5px;
+  color: #858585;
   font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.movie-year.rated-r {
+  color: #b7b7b7;
 }
 
 .empty {
@@ -346,6 +381,54 @@ footer {
   color: #777;
   font-size: 12px;
   text-align: center;
+}
+
+/* Search overlay */
+.search-overlay {
+  position: fixed;
+  z-index: 15;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 69px;
+  overflow-y: auto;
+  background: rgb(1, 1, 1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility 0s linear .3s;
+}
+
+.search-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .3s ease, visibility 0s;
+}
+
+.search-inner {
+  width: min(1500px, calc(100% - 48px));
+  margin: auto;
+  padding: 28px 0 60px;
+}
+
+.search-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-head h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.6px;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 22px 17px;
 }
 
 .player-overlay {
@@ -368,6 +451,7 @@ footer {
   justify-content: space-between;
   gap: 14px;
   background: #000;
+  border-bottom: 1px solid #191919;
 }
 
 .player-brand {
@@ -389,6 +473,7 @@ footer {
   padding: 9px 12px;
   border-radius: 4px;
   font-size: 12px;
+  transition: background .18s ease;
 }
 
 .player-control:hover { background: #292929; }
@@ -502,6 +587,11 @@ footer {
     grid-auto-columns: minmax(160px, 205px);
     gap: 19px;
   }
+
+  .search-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px 19px;
+  }
 }
 
 @media (max-width: 650px) {
@@ -524,9 +614,19 @@ footer {
   }
 
   main { width: calc(100% - 28px); }
+
   .hero { height: 430px; }
-  .hero-content { padding-bottom: 30px; }
-  .hero h1 { font-size: 39px; }
+
+  .hero-content {
+    padding: 0 0 30px;
+    max-width: 100%;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+    letter-spacing: -1.5px;
+  }
+
   .hero-description { font-size: 13px; }
 
   .hero::after {
@@ -540,8 +640,18 @@ footer {
     gap: 12px;
   }
 
+  .search-inner { width: calc(100% - 28px); }
+
+  .search-grid {
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 18px 12px;
+  }
+
+  .movie-title { font-size: 12px; }
+
   .section { margin-top: 31px; }
   .section-head h2 { font-size: 19px; }
+
   .player-topbar { padding: 0 12px; }
   .player-brand { font-size: 18px; }
   .player-control { padding: 8px 9px; }
@@ -563,7 +673,14 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; }
+  *, *::before, *::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .movie-card:hover .poster {
+    transform: none;
+  }
 }
 </style>
 </head>
@@ -595,28 +712,31 @@ footer {
       <div class="hero-meta" id="heroMeta"></div>
       <p class="hero-description" id="heroDescription"></p>
       <div class="hero-actions">
-        <button class="primary-btn" id="heroPlay">▶ Play</button>
-        <button class="secondary-btn" id="heroInfo">More info</button>
-        <button class="secondary-btn" id="nextFeatured">Next featured</button>
+        <button class="primary-btn play-btn" id="heroPlay">Play</button>
+        <button class="next-btn" id="nextFeatured" aria-label="Next featured">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 5 7 7-7 7"></path>
+          </svg>
+        </button>
       </div>
     </div>
   </section>
 
   <div id="collections"></div>
-
-  <section class="section" id="searchResults" hidden>
-    <div class="section-head">
-      <div>
-        <h2>Search results</h2>
-        <p class="section-subtitle">Movies matching your search</p>
-      </div>
-      <span class="section-count" id="resultCount"></span>
-    </div>
-    <div class="movie-row" id="resultRow"></div>
-  </section>
 </main>
 
 <footer>movium. · Discover something worth watching.</footer>
+
+<div class="search-overlay" id="searchOverlay" aria-hidden="true">
+  <div class="search-inner">
+    <div class="search-head">
+      <h2>Search</h2>
+      <span class="section-count" id="resultCount"></span>
+    </div>
+    <div class="search-grid" id="resultRow"></div>
+  </div>
+</div>
 
 <div class="player-overlay" id="playerOverlay" aria-hidden="true">
   <div class="player-topbar">
@@ -660,9 +780,9 @@ const movies = [
     poster: "",
     customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkqVc52eej74emXxh0Z1IYzAPHSvkyrs_nROQQZdyQoNcJIBrEEnetW0HCRocnYR7GJyHRw&s=10",
     backdrop: "https://static0.colliderimages.com/wordpress/wp-content/uploads/2026/03/spider-man-brand-new-day-tom-holland-2.jpg",
-    category: ['Superheroes', 'Featured', 'Marvel'],
-    rating: 'Not Rated',
-    story: 'Peter Parker faces a new chapter as Spider-Man, fighting crime in a world that no longer remembers his identity.',
+    category: ["Superheroes", "Featured", "Marvel"],
+    rating: "Not Rated",
+    story: "Peter Parker faces a new chapter as Spider-Man, fighting crime in a world that no longer remembers his identity.",
     cast: "Tom Holland, Zendaya, Jacob Batalon",
     drive: "https://drive.google.com/file/d/1cBtLxO4XbS7exzq05I4E1fA8IF8cBKT0/view"
   },
@@ -694,8 +814,8 @@ const movies = [
     poster: "",
     customPoster: "https://m.media-amazon.com/images/M/MV5BNTcyNmJlZmQtNDUwYy00NDBjLTg1NGQtYTY2Y2UxMWM3NmI1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
     backdrop: "https://a.ltrbxd.com/resized/sm/upload/vn/7k/d6/d7/odyssey-1200-1200-675-675-crop-000000.jpg?v=9f3eb79026",
-    category: ['Adventure', 'Featured', 'R-Rated'],
-    rating: 'R',
+    category: ["Adventure", "Featured", "R-Rated"],
+    rating: "R",
     story: "An epic adaptation of Homer's ancient tale follows Odysseus on his long and dangerous journey home after the Trojan War.",
     cast: "Matt Damon, Anne Hathaway, Tom Holland, Zendaya",
     drive: "https://drive.google.com/file/d/1ZWEQ9sefcNmwWKRlzCgx96gNzMSpI2iQ/view"
@@ -739,7 +859,7 @@ const movies = [
     poster: "/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg",
     customPoster: "",
     backdrop: "/m8JTwHFwX7I7JY5fPe4SjqejWag.jpg",
-    category: ['Superheroes', 'Marvel'],
+    category: ["Superheroes", "Marvel"],
     story: "Scott Lang and his family explore the Quantum Realm and encounter a powerful new threat.",
     cast: "Paul Rudd, Evangeline Lilly, Jonathan Majors, Kathryn Newton",
     drive: "https://drive.google.com/file/d/1AW3Zm8256tzZ-37lmgYmIGse4knu8IdA/view"
@@ -750,7 +870,7 @@ const movies = [
     poster: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
     customPoster: "",
     backdrop: "https://d23.com/app/uploads/2019/08/1180w-600h_081319_avengers-endgame-facts.jpg",
-    category: ['Avengers', 'Superheroes', 'Marvel', 'Featured'],
+    category: ["Avengers", "Superheroes", "Marvel", "Featured"],
     story: "The surviving Avengers work together to reverse the devastating consequences of Thanos's actions.",
     cast: "Robert Downey Jr., Chris Evans, Mark Ruffalo, Scarlett Johansson, Chris Hemsworth",
     drive: "https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view"
@@ -761,7 +881,7 @@ const movies = [
     poster: "/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
     customPoster: "",
     backdrop: "",
-    category: ['Avengers', 'Superheroes', 'Marvel'],
+    category: ["Avengers", "Superheroes", "Marvel"],
     story: "The Avengers and their allies face a race against time to stop Thanos from collecting the Infinity Stones.",
     cast: "Robert Downey Jr., Chris Hemsworth, Mark Ruffalo, Chris Evans, Josh Brolin",
     drive: "https://drive.google.com/file/d/1zpl7Dngm7ESW_yLZvcQMm9AhmR1izyus/view"
@@ -772,7 +892,7 @@ const movies = [
     poster: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     customPoster: "",
     backdrop: "/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
-    category: ['Science Fiction', 'Featured'],
+    category: ["Science Fiction", "Featured"],
     story: "A team of explorers travels beyond this galaxy to discover whether mankind has a future among the stars.",
     cast: "Matthew McConaughey, Anne Hathaway, Jessica Chastain, Michael Caine",
     drive: "https://drive.google.com/file/d/1rjx6-12dB11LWwj5jFEFX2QMuZiEVUFk/view"
@@ -783,245 +903,245 @@ const movies = [
     poster: "/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
     customPoster: "",
     backdrop: "https://media.newyorker.com/photos/59097ccac14b3c606c109711/16:9/w_1280,c_limit/Brody-Whiplash.jpg",
-    category: ['Drama', 'Featured', 'R-Rated'],
-    rating: 'R',
+    category: ["Drama", "Featured", "R-Rated"],
+    rating: "R",
     story: "A determined young drummer enters a demanding music conservatory, where an uncompromising instructor pushes him to his limits.",
     cast: "Miles Teller, J.K. Simmons, Paul Reiser, Melissa Benoist",
     drive: "https://drive.google.com/file/d/1NsMv5rGihaprmvDovnW4RT7_R15G8GE7/view"
   },
   {
-  title: "A Minecraft Movie",
-  year: 2025,
-  poster: "",
-  customPoster: "https://resizing.flixster.com/ViCYuISBvkrLsqD3ePYNSHszhoc=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzc1ZTAwYzViLTIyMzAtNDJmMS04NjNlLTBjMTAyMjkyZDhhYy5qcGc=",
-  backdrop: "",
-  category: ["Adventure", "Comedy"],
-  story: "Four misfits are pulled through a mysterious portal into the Overworld, a cubic wonderland powered by imagination. To get home, they must master this world and protect it from dangerous creatures.",
-  cast: "Jason Momoa, Jack Black, Danielle Brooks, Emma Myers, Sebastian Hansen",
-  drive: "https://drive.google.com/file/d/1FHBn4bOQAAK7eDos_yRqYdtKhgm6uEXl/view"
-},
-{
-  title: "Alvin and the Chipmunks",
-  year: 2007,
-  poster: "",
-  customPoster: "https://thumb.wikimedia.org/wikipedia/en/thumb/d/dc/Alvin_and_the_Chipmunks2007.jpg/250px-Alvin_and_the_Chipmunks2007.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail",
-  backdrop: "",
-  category: ["Comedy", "Family"],
-  story: "Three singing chipmunks move in with struggling songwriter Dave Seville and turn his life upside down while helping him find success.",
-  cast: "Jason Lee, Justin Long, Matthew Gray Gubler, Jesse McCartney, David Cross",
-  drive: "https://drive.google.com/file/d/1uCRRJZj1GAaweX996uHbF2zxPoessmGW/view"
-},
-{
-  title: "Alvin and the Chipmunks: The Squeakquel",
-  year: 2009,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTq4bSXZABfd63kqazM5QD7N3hkXb1WrjCedwU35Aas_jyxY8Tlm19NuqHXGWUG2wqFNtu&s=10",
-  backdrop: "",
-  category: ["Comedy", "Family"],
-  story: "The chipmunks return to school, where they face new challenges and meet the Chipettes, a talented trio of singing chipmunks.",
-  cast: "Jason Lee, Justin Long, Matthew Gray Gubler, Jesse McCartney, Christina Applegate, Anna Faris, Amy Poehler",
-  drive: "https://drive.google.com/file/d/1em55qHTtdrWD4Dox9CXs9r1042TLu_cu/view"
-},
-{
-  title: "Alvin and the Chipmunks: Chipwrecked",
-  year: 2011,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMe6ogjVZWX8RdPvASf_O-VTwOJ5EL7CCI1kG3TxShSZ1d_slZDvHxPX-7262A-L8arwR4ug&s=10",
-  backdrop: "",
-  category: ["Comedy", "Adventure"],
-  story: "During a cruise vacation, the chipmunks and Chipettes end up stranded on a tropical island and discover that their getaway is far more complicated than expected.",
-  cast: "Jason Lee, Justin Long, Matthew Gray Gubler, Jesse McCartney, Christina Applegate, Anna Faris, Amy Poehler",
-  drive: "https://drive.google.com/file/d/1LTKy48IbusfXsl5nSNDTd0M3A8B3aPke/view"
-},
-{
-  title: "American Psycho",
-  year: 2000,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJq8JhbePd_K1RbQU9uWEAHyO3d1BxFdjytmWhXS6jn0EjNaxmcO0ls1Kul1bFqEpfNzuB&s=10",
-  backdrop: "",
-  category: ["Thriller", "Crime", "R-Rated"],
-    rating: 'R',
-  story: "A wealthy New York investment banker maintains a polished public image while concealing a disturbing and increasingly unstable private life.",
-  cast: "Christian Bale, Willem Dafoe, Jared Leto, Reese Witherspoon, Justin Theroux",
-  drive: "https://drive.google.com/file/d/1XLbBFM6yQ48V1yXIfrenbhpMyZeUryV7/view"
-},
-{
-  title: "Alien: Romulus",
-  year: 2024,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc0Why8ZAWt5neAxs9vuy21DiVTKVoP7A3j_l2nDxpxNtHm20wuQPzi9njk9yVGYch9Uvd&s=10",
-  backdrop: "",
-  category: ["Sci-Fi", "Horror", "R-Rated"],
-    rating: 'R',
-  story: "A group of young space colonists scavenging an abandoned space station encounter a terrifying extraterrestrial threat.",
-  cast: "Cailee Spaeny, David Jonsson, Archie Renaux, Isabela Merced, Spike Fearn, Aileen Wu",
-  drive: "https://drive.google.com/file/d/122SQiB6invgpsu7KpWiYbix5KPUW2WN4/view"
-},
-{
-  title: "A Quiet Place: Day One",
-  year: 2024,
-  poster: "",
-  customPoster: "https://resizing.flixster.com/52tNaAdGhYWG4PukngNz7iOu4NA=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzIyNDlkYjk2LTUwZmQtNDgzOS04ZGIyLWI3NzZlMWE0OGNkNi5qcGc=",
-  backdrop: "",
-  category: ["Horror", "Sci-Fi"],
-  story: "As terrifying creatures invade New York City and hunt by sound, a woman must navigate the chaos while fighting to survive.",
-  cast: "Lupita Nyong'o, Joseph Quinn, Alex Wolff, Djimon Hounsou",
-  drive: "https://drive.google.com/file/d/1YEt3ZJoK6SeV0CjH6vVJJvoKQ6oyStpE/view"
-},
-{
-  title: "Ace Ventura: Pet Detective",
-  year: 1994,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkMlj4jMOhHdcnqvYEAqclPlmMnBM7NB_CtvanYvFdZ_ozbXfK3gjhCCxdvrEiC8Ok9DJG&s=10",
-  backdrop: "",
-  category: ["Comedy", "Mystery"],
-  story: "An eccentric private detective specializing in missing animals is hired to find the stolen mascot of a professional football team.",
-  cast: "Jim Carrey, Courteney Cox, Sean Young, Tone Loc, Dan Marino",
-  drive: "https://drive.google.com/file/d/1hFcuvFNBe3iQVhP0RKKPOZzPYU9-eFwD/view"
-},
-{
-  title: "Animal Farm",
-  year: 2025,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp9dGFrESZGVwiQct17XPxSHC5KeiHI-abcBcB8HYZYNDEQt-CVySvmuiI2ixViJzZ0dHI&s=10",
-  backdrop: "",
-  category: ["Animation", "Adventure"],
-  story: "Farm animals rebel against their human owner and establish their own society, only to discover that power can corrupt those who promise equality.",
-  cast: "Seth Rogen, Gaten Matarazzo, Kieran Culkin, Glenn Close, Woody Harrelson",
-  drive: "https://drive.google.com/file/d/1ecPKRaM-a2tYft2-uQoS9XjN2ItsFXDa/view"
-},
-{
-  title: "Blue Beetle",
-  year: 2023,
-  poster: "",
-  customPoster: "https://static.dc.com/2023-07/Movies_Thumb_BlueBeetle_Txtd_Main_1sht_REV_BLBTL.jpg",
-  backdrop: "",
-    category: ['Action', 'Sci-Fi', 'Superheroes', 'DC'],
-    rating: 'PG-13',
-  story: "Recent college graduate Jaime Reyes returns home and discovers that an ancient alien scarab has chosen him as its host, granting him a powerful armored suit.",
-  cast: "Xolo Maridueña, Adriana Barraza, Damián Alcázar, Raoul Max Trujillo, Susan Sarandon, George Lopez",
-  drive: "https://drive.google.com/file/d/1T2XMXtDAlohPcGdi-u2p9zXF9Os9zkY1/view?t=0.155"
-},
-{
-  title: "Batman",
-  year: 1989,
-  poster: "",
-  customPoster: "https://static.wikia.nocookie.net/batman/images/1/1c/Batman_teaser.jpg/revision/latest?cb=20151021190201",
-  backdrop: "https://static.wikia.nocookie.net/batman/images/b/be/1989_WB_Batsignal.png/revision/latest?cb=20171119175305",
-    category: ['Action', 'Superhero', 'Superheroes', 'Featured'],
-    rating: 'PG-13',
-  story: 'Gotham City’s masked vigilante Batman confronts the Joker, a criminal whose campaign of chaos threatens the city, while reporter Vicki Vale investigates the mystery surrounding them.',
-  cast: "Michael Keaton, Jack Nicholson, Kim Basinger",
-  drive: "https://drive.google.com/file/d/1P8z8U0j5UHxqTq0taTj18TgG6nZwSKYd/view"
-},
-{
-  title: "Batman Returns",
-  year: 1992,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR67F3tPnZHljaZ1MSTKI65EUuR5JsWnBcfe1vtOfBLmpA6rfgnvNeUqdk7een2OCUZVdrm3w&s=10",
-  backdrop: "",
-    category: ['Action', 'Superhero', 'Superheroes'],
-    rating: 'PG-13',
-  story: 'Batman faces the Penguin, a mysterious outcast seeking power in Gotham, while Catwoman pursues her own path and becomes entangled in their conflict.',
-  cast: "Michael Keaton, Danny DeVito, Michelle Pfeiffer",
-  drive: "https://drive.google.com/file/d/1aeYtz38ljtxCCtuVs4x0zuUh2TWKf-K6/view"
-},
-{
-  title: "Batman Begins",
-  year: 2005,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTouUffs0WxuLY6R01M-pjsJXyum55GqxyqXh3aHXjg4VUG4BI1b6xIq2o&s=10",
-  backdrop: "",
-    category: ['Action', 'Crime', 'Superheroes'],
-    rating: 'PG-13',
-  story: 'Bruce Wayne returns to Gotham after years away and trains to become Batman, determined to fight corruption and stop a conspiracy threatening the city.',
-  cast: "Christian Bale, Michael Caine, Liam Neeson",
-  drive: "https://drive.google.com/file/d/1ZegfkrD50sGDUVJ-4d9IiBpR0MTmdphx/view"
-},
-{
-  title: "The Dark Knight",
-  year: 2008,
-  poster: "",
-  customPoster: "https://i0.wp.com/dailycampus.com/wp-content/uploads/2021/03/330px-The_dark_knight.jpg?resize=399%2C598&ssl=1",
-  backdrop: "",
-    category: ['Action', 'Crime', 'Superheroes'],
-    rating: 'PG-13',
-  story: 'Batman, Lieutenant James Gordon, and District Attorney Harvey Dent work to dismantle Gotham’s criminal networks, but the Joker pushes the city into a crisis that tests their principles.',
-  cast: "Christian Bale, Heath Ledger, Aaron Eckhart",
-  drive: "https://drive.google.com/file/d/1CZvw1MgSLVQR9Z9L8qpl8j1oI7DnMDWr/view"
-},
-{
-  title: "The Batman",
-  year: 2022,
-  poster: "",
-  customPoster: "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/130/2021/12/02163447/pOaKyhMwALpCTg07eQQu0SQCbL9-scaled.jpg",
-  backdrop: "https://occ-0-2219-2218.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABRZGKb0WLE_o_W8uv5JFk7IO3NXuPlTCuWJs9lpDeq1cctUSf9dvwFJZMS4stKawVIqkfEqMZlWdTkmoOCTrtk2Hxf6SzXz2LhOx.jpg?r=55f",
-    category: ['Action', 'Crime', 'Superheroes', 'Featured'],
-    rating: 'PG-13',
-  story: 'In his second year as Gotham’s vigilante, Batman investigates a series of murders that expose corruption across the city and bring him into conflict with the Riddler and Catwoman.',
-  cast: "Robert Pattinson, Zoë Kravitz, Paul Dano",
-  drive: "https://drive.google.com/file/d/16si_yvGyZn5mgvNIHil5xXOR3I8RaTKb/view"
-},
-{
-  title: "Black Panther",
-  year: 2018,
-  poster: "",
-  customPoster: "https://lumiere-a.akamaihd.net/v1/images/p_blackpanther_19754_4ac13f07.jpeg?region=0%2C0%2C540%2C810",
-  backdrop: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2022/09/Wakanda-Forever-landscape.jpg?w=1600&h=900&fit=crop",
-    category: ['Action', 'Superhero', 'Superheroes', 'Marvel', 'Featured'],
-    rating: 'PG-13',
-  story: 'After becoming king of Wakanda, T’Challa must defend his nation and decide how it should use its advanced technology when a powerful challenger emerges.',
-  cast: "Chadwick Boseman, Michael B. Jordan, Lupita Nyong'o",
-  drive: "https://drive.google.com/file/d/1wdUOiz7tI3R5vTz779h7CesAW5h0kUh1/view"
-},
-{
-  title: "Black Panther: Wakanda Forever",
-  year: 2022,
-  poster: "",
-  customPoster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Black_Panther_Wakanda_Forever_poster.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
-  backdrop: "",
-    category: ['Action', 'Superhero', 'Superheroes', 'Marvel'],
-    rating: 'PG-13',
-  story: 'As Wakanda mourns King T’Challa, Shuri, Queen Ramonda, and their allies face outside pressure and a conflict with Talokan, an underwater nation led by Namor.',
-  cast: "Letitia Wright, Angela Bassett, Tenoch Huerta",
-  drive: "https://drive.google.com/file/d/198qUcefIK54KnZzxAx6_L8u7l37oCfhK/view"
-},
-{
-  title: "Barbie",
-  year: 2023,
-  poster: "",
-  customPoster: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p13472534_p_v8_am.jpg",
-  backdrop: "",
-  category: ["Comedy", "Fantasy"],
-    rating: 'PG-13',
-  story: 'Barbie’s seemingly perfect life in Barbieland changes when she begins experiencing unexpected thoughts and travels to the human world with Ken, discovering that real life is more complicated than their fantasy home.',
-  cast: "Margot Robbie, Ryan Gosling, America Ferrera",
-  drive: "https://drive.google.com/file/d/1K88LvZ6q9KRwsdiVQ72Wrh5DQqWVLkd3/view"
-},
-{
-  title: "Backrooms",
-  year: 2022,
-  poster: "",
-  customPoster: "https://upload.wikimedia.org/wikipedia/en/3/3d/Backrooms_%28film%29_poster.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
-  backdrop: "",
-  category: ["Horror", "Mystery", "R-Rated"],
-    rating: 'R',
-  story: 'A strange doorway leads into an endless maze of fluorescent-lit rooms, where the familiar world gives way to an unsettling place governed by unknown rules.',
-    cast: 'Chiwetel Ejiofor, Renate Reinsve, Mark Duplass, Finn Bennett, Lukita Maxwell',
-  drive: "https://drive.google.com/file/d/1iEETRhLjAGSlkyRAx4SMYgBaklHL1cob/view?t=0.148"
-},
-{
-  title: "Black Adam",
-  year: 2022,
-  poster: "",
-  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc47Uom4yrMMZXhUrQNZuHmeFSzsFsvFVjABDVkg3blRe342wOd0OsfUru&s=10",
-  backdrop: "https://deadline.com/wp-content/uploads/2022/10/MCDBLAD_WB003.jpg",
-    category: ['Action', 'Superhero', 'Superheroes', 'DC', 'Featured'],
-    rating: 'PG-13',
-  story: 'After nearly five thousand years imprisoned, Teth-Adam is released into the modern world and uses immense powers according to his own harsh sense of justice, bringing him into conflict with the Justice Society.',
-  cast: "Dwayne Johnson, Aldis Hodge, Pierce Brosnan",
-  drive: "https://drive.google.com/file/d/1zs2JXhwwFB8QXgigGkRWD-v98bHXdjJM/view"
-}
+    title: "A Minecraft Movie",
+    year: 2025,
+    poster: "",
+    customPoster: "https://resizing.flixster.com/ViCYuISBvkrLsqD3ePYNSHszhoc=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzc1ZTAwYzViLTIyMzAtNDJmMS04NjNlLTBjMTAyMjkyZDhhYy5qcGc=",
+    backdrop: "",
+    category: ["Adventure", "Comedy"],
+    story: "Four misfits are pulled through a mysterious portal into the Overworld, a cubic wonderland powered by imagination. To get home, they must master this world and protect it from dangerous creatures.",
+    cast: "Jason Momoa, Jack Black, Danielle Brooks, Emma Myers, Sebastian Hansen",
+    drive: "https://drive.google.com/file/d/1FHBn4bOQAAK7eDos_yRqYdtKhgm6uEXl/view"
+  },
+  {
+    title: "Alvin and the Chipmunks",
+    year: 2007,
+    poster: "",
+    customPoster: "https://thumb.wikimedia.org/wikipedia/en/thumb/d/dc/Alvin_and_the_Chipmunks2007.jpg/250px-Alvin_and_the_Chipmunks2007.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail",
+    backdrop: "",
+    category: ["Comedy", "Family"],
+    story: "Three singing chipmunks move in with struggling songwriter Dave Seville and turn his life upside down while helping him find success.",
+    cast: "Jason Lee, Justin Long, Matthew Gray Gubler, Jesse McCartney, David Cross",
+    drive: "https://drive.google.com/file/d/1uCRRJZj1GAaweX996uHbF2zxPoessmGW/view"
+  },
+  {
+    title: "Alvin and the Chipmunks: The Squeakquel",
+    year: 2009,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTq4bSXZABfd63kqazM5QD7N3hkXb1WrjCedwU35Aas_jyxY8Tlm19NuqHXGWUG2wqFNtu&s=10",
+    backdrop: "",
+    category: ["Comedy", "Family"],
+    story: "The chipmunks return to school, where they face new challenges and meet the Chipettes, a talented trio of singing chipmunks.",
+    cast: "Jason Lee, Justin Long, Matthew Gray Gubler, Jesse McCartney, Christina Applegate, Anna Faris, Amy Poehler",
+    drive: "https://drive.google.com/file/d/1em55qHTtdrWD4Dox9CXs9r1042TLu_cu/view"
+  },
+  {
+    title: "Alvin and the Chipmunks: Chipwrecked",
+    year: 2011,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMe6ogjVZWX8RdPvASf_O-VTwOJ5EL7CCI1kG3TxShSZ1d_slZDvHxPX-7262A-L8arwR4ug&s=10",
+    backdrop: "",
+    category: ["Comedy", "Adventure"],
+    story: "During a cruise vacation, the chipmunks and Chipettes end up stranded on a tropical island and discover that their getaway is far more complicated than expected.",
+    cast: "Jason Lee, Justin Long, Matthew Gray Gubler, Jesse McCartney, Christina Applegate, Anna Faris, Amy Poehler",
+    drive: "https://drive.google.com/file/d/1LTKy48IbusfXsl5nSNDTd0M3A8B3aPke/view"
+  },
+  {
+    title: "American Psycho",
+    year: 2000,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJq8JhbePd_K1RbQU9uWEAHyO3d1BxFdjytmWhXS6jn0EjNaxmcO0ls1Kul1bFqEpfNzuB&s=10",
+    backdrop: "",
+    category: ["Thriller", "Crime", "R-Rated"],
+    rating: "R",
+    story: "A wealthy New York investment banker maintains a polished public image while concealing a disturbing and increasingly unstable private life.",
+    cast: "Christian Bale, Willem Dafoe, Jared Leto, Reese Witherspoon, Justin Theroux",
+    drive: "https://drive.google.com/file/d/1XLbBFM6yQ48V1yXIfrenbhpMyZeUryV7/view"
+  },
+  {
+    title: "Alien: Romulus",
+    year: 2024,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc0Why8ZAWt5neAxs9vuy21DiVTKVoP7A3j_l2nDxpxNtHm20wuQPzi9njk9yVGYch9Uvd&s=10",
+    backdrop: "",
+    category: ["Sci-Fi", "Horror", "R-Rated"],
+    rating: "R",
+    story: "A group of young space colonists scavenging an abandoned space station encounter a terrifying extraterrestrial threat.",
+    cast: "Cailee Spaeny, David Jonsson, Archie Renaux, Isabela Merced, Spike Fearn, Aileen Wu",
+    drive: "https://drive.google.com/file/d/122SQiB6invgpsu7KpWiYbix5KPUW2WN4/view"
+  },
+  {
+    title: "A Quiet Place: Day One",
+    year: 2024,
+    poster: "",
+    customPoster: "https://resizing.flixster.com/52tNaAdGhYWG4PukngNz7iOu4NA=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzIyNDlkYjk2LTUwZmQtNDgzOS04ZGIyLWI3NzZlMWE0OGNkNi5qcGc=",
+    backdrop: "",
+    category: ["Horror", "Sci-Fi"],
+    story: "As terrifying creatures invade New York City and hunt by sound, a woman must navigate the chaos while fighting to survive.",
+    cast: "Lupita Nyong'o, Joseph Quinn, Alex Wolff, Djimon Hounsou",
+    drive: "https://drive.google.com/file/d/1YEt3ZJoK6SeV0CjH6vVJJvoKQ6oyStpE/view"
+  },
+  {
+    title: "Ace Ventura: Pet Detective",
+    year: 1994,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkMlj4jMOhHdcnqvYEAqclPlmMnBM7NB_CtvanYvFdZ_ozbXfK3gjhCCxdvrEiC8Ok9DJG&s=10",
+    backdrop: "",
+    category: ["Comedy", "Mystery"],
+    story: "An eccentric private detective specializing in missing animals is hired to find the stolen mascot of a professional football team.",
+    cast: "Jim Carrey, Courteney Cox, Sean Young, Tone Loc, Dan Marino",
+    drive: "https://drive.google.com/file/d/1hFcuvFNBe3iQVhP0RKKPOZzPYU9-eFwD/view"
+  },
+  {
+    title: "Animal Farm",
+    year: 2025,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp9dGFrESZGVwiQct17XPxSHC5KeiHI-abcBcB8HYZYNDEQt-CVySvmuiI2ixViJzZ0dHI&s=10",
+    backdrop: "",
+    category: ["Animation", "Adventure"],
+    story: "Farm animals rebel against their human owner and establish their own society, only to discover that power can corrupt those who promise equality.",
+    cast: "Seth Rogen, Gaten Matarazzo, Kieran Culkin, Glenn Close, Woody Harrelson",
+    drive: "https://drive.google.com/file/d/1ecPKRaM-a2tYft2-uQoS9XjN2ItsFXDa/view"
+  },
+  {
+    title: "Blue Beetle",
+    year: 2023,
+    poster: "",
+    customPoster: "https://static.dc.com/2023-07/Movies_Thumb_BlueBeetle_Txtd_Main_1sht_REV_BLBTL.jpg",
+    backdrop: "",
+    category: ["Action", "Sci-Fi", "Superheroes", "DC"],
+    rating: "PG-13",
+    story: "Recent college graduate Jaime Reyes returns home and discovers that an ancient alien scarab has chosen him as its host, granting him a powerful armored suit.",
+    cast: "Xolo Maridueña, Adriana Barraza, Damián Alcázar, Raoul Max Trujillo, Susan Sarandon, George Lopez",
+    drive: "https://drive.google.com/file/d/1T2XMXtDAlohPcGdi-u2p9zXF9Os9zkY1/view?t=0.155"
+  },
+  {
+    title: "Batman",
+    year: 1989,
+    poster: "",
+    customPoster: "https://static.wikia.nocookie.net/batman/images/1/1c/Batman_teaser.jpg/revision/latest?cb=20151021190201",
+    backdrop: "https://static.wikia.nocookie.net/batman/images/b/be/1989_WB_Batsignal.png/revision/latest?cb=20171119175305",
+    category: ["Action", "Superhero", "Superheroes", "Featured"],
+    rating: "PG-13",
+    story: "Gotham City’s masked vigilante Batman confronts the Joker, a criminal whose campaign of chaos threatens the city, while reporter Vicki Vale investigates the mystery surrounding them.",
+    cast: "Michael Keaton, Jack Nicholson, Kim Basinger",
+    drive: "https://drive.google.com/file/d/1P8z8U0j5UHxqTq0taTj18TgG6nZwSKYd/view"
+  },
+  {
+    title: "Batman Returns",
+    year: 1992,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR67F3tPnZHljaZ1MSTKI65EUuR5JsWnBcfe1vtOfBLmpA6rfgnvNeUqdk7een2OCUZVdrm3w&s=10",
+    backdrop: "",
+    category: ["Action", "Superhero", "Superheroes"],
+    rating: "PG-13",
+    story: "Batman faces the Penguin, a mysterious outcast seeking power in Gotham, while Catwoman pursues her own path and becomes entangled in their conflict.",
+    cast: "Michael Keaton, Danny DeVito, Michelle Pfeiffer",
+    drive: "https://drive.google.com/file/d/1aeYtz38ljtxCCtuVs4x0zuUh2TWKf-K6/view"
+  },
+  {
+    title: "Batman Begins",
+    year: 2005,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTouUffs0WxuLY6R01M-pjsJXyum55GqxyqXh3aHXjg4VUG4BI1b6xIq2o&s=10",
+    backdrop: "",
+    category: ["Action", "Crime", "Superheroes"],
+    rating: "PG-13",
+    story: "Bruce Wayne returns to Gotham after years away and trains to become Batman, determined to fight corruption and stop a conspiracy threatening the city.",
+    cast: "Christian Bale, Michael Caine, Liam Neeson",
+    drive: "https://drive.google.com/file/d/1ZegfkrD50sGDUVJ-4d9IiBpR0MTmdphx/view"
+  },
+  {
+    title: "The Dark Knight",
+    year: 2008,
+    poster: "",
+    customPoster: "https://i0.wp.com/dailycampus.com/wp-content/uploads/2021/03/330px-The_dark_knight.jpg?resize=399%2C598&ssl=1",
+    backdrop: "",
+    category: ["Action", "Crime", "Superheroes"],
+    rating: "PG-13",
+    story: "Batman, Lieutenant James Gordon, and District Attorney Harvey Dent work to dismantle Gotham’s criminal networks, but the Joker pushes the city into a crisis that tests their principles.",
+    cast: "Christian Bale, Heath Ledger, Aaron Eckhart",
+    drive: "https://drive.google.com/file/d/1CZvw1MgSLVQR9ZL8qpl8j1oI7DnMDWr/view"
+  },
+  {
+    title: "The Batman",
+    year: 2022,
+    poster: "",
+    customPoster: "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/130/2021/12/02163447/pOaKyhMwALpCTg07eQQu0SQCbL9-scaled.jpg",
+    backdrop: "https://occ-0-2219-2218.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABRZGKb0WLE_o_W8uv5JFk7IO3NXuPlTCuWJs9lpDeq1cctUSf9dvwFJZMS4stKawVIqkfEqMZlWdTkmoOCTrtk2Hxf6SzXz2LhOx.jpg?r=55f",
+    category: ["Action", "Crime", "Superheroes", "Featured"],
+    rating: "PG-13",
+    story: "In his second year as Gotham’s vigilante, Batman investigates a series of murders that expose corruption across the city and bring him into conflict with the Riddler and Catwoman.",
+    cast: "Robert Pattinson, Zoë Kravitz, Paul Dano",
+    drive: "https://drive.google.com/file/d/16si_yvGyZn5mgvNIHil5xXOR3I8RaTKb/view"
+  },
+  {
+    title: "Black Panther",
+    year: 2018,
+    poster: "",
+    customPoster: "https://lumiere-a.akamaihd.net/v1/images/p_blackpanther_19754_4ac13f07.jpeg?region=0%2C0%2C540%2C810",
+    backdrop: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2022/09/Wakanda-Forever-landscape.jpg?w=1600&h=900&fit=crop",
+    category: ["Action", "Superhero", "Superheroes", "Marvel", "Featured"],
+    rating: "PG-13",
+    story: "After becoming king of Wakanda, T’Challa must defend his nation and decide how it should use its advanced technology when a powerful challenger emerges.",
+    cast: "Chadwick Boseman, Michael B. Jordan, Lupita Nyong'o",
+    drive: "https://drive.google.com/file/d/1wdUOiz7tI3R5vTz779h7CesAW5h0kUh1/view"
+  },
+  {
+    title: "Black Panther: Wakanda Forever",
+    year: 2022,
+    poster: "",
+    customPoster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Black_Panther_Wakanda_Forever_poster.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+    backdrop: "",
+    category: ["Action", "Superhero", "Superheroes", "Marvel"],
+    rating: "PG-13",
+    story: "As Wakanda mourns King T’Challa, Shuri, Queen Ramonda, and their allies face outside pressure and a conflict with Talokan, an underwater nation led by Namor.",
+    cast: "Letitia Wright, Angela Bassett, Tenoch Huerta",
+    drive: "https://drive.google.com/file/d/198qUcefIK54KnZzxAx6_L8u7l37oCfhK/view"
+  },
+  {
+    title: "Barbie",
+    year: 2023,
+    poster: "",
+    customPoster: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p13472534_p_v8_am.jpg",
+    backdrop: "",
+    category: ["Comedy", "Fantasy"],
+    rating: "PG-13",
+    story: "Barbie’s seemingly perfect life in Barbieland changes when she begins experiencing unexpected thoughts and travels to the human world with Ken, discovering that real life is more complicated than their fantasy home.",
+    cast: "Margot Robbie, Ryan Gosling, America Ferrera",
+    drive: "https://drive.google.com/file/d/1K88LvZ6q9KRwsdiVQ72Wrh5DQqWVLkd3/view"
+  },
+  {
+    title: "Backrooms",
+    year: 2022,
+    poster: "",
+    customPoster: "https://upload.wikimedia.org/wikipedia/en/3/3d/Backrooms_%28film%29_poster.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+    backdrop: "",
+    category: ["Horror", "Mystery", "R-Rated"],
+    rating: "R",
+    story: "A strange doorway leads into an endless maze of fluorescent-lit rooms, where the familiar world gives way to an unsettling place governed by unknown rules.",
+    cast: "Chiwetel Ejiofor, Renate Reinsve, Mark Duplass, Finn Bennett, Lukita Maxwell",
+    drive: "https://drive.google.com/file/d/1iEETRhLjAGSlkyRAx4SMYgBaklHL1cob/view?t=0.148"
+  },
+  {
+    title: "Black Adam",
+    year: 2022,
+    poster: "",
+    customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc47Uom4yrMMZXhUrQNZuHmeFSzsFsvFVjABDVkg3blRe342wOd0OsfUru&s=10",
+    backdrop: "https://deadline.com/wp-content/uploads/2022/10/MCDBLAD_WB003.jpg",
+    category: ["Action", "Superhero", "Superheroes", "DC", "Featured"],
+    rating: "PG-13",
+    story: "After nearly five thousand years imprisoned, Teth-Adam is released into the modern world and uses immense powers according to his own harsh sense of justice, bringing him into conflict with the Justice Society.",
+    cast: "Dwayne Johnson, Aldis Hodge, Pierce Brosnan",
+    drive: "https://drive.google.com/file/d/1zs2JXhwwFB8QXgigGkRWD-v98bHXdjJM/view"
+  }
 ];
 
 const collections = [
@@ -1029,51 +1149,41 @@ const collections = [
   { title: "Holiday Favorites", subtitle: "Movies for the holiday season", category: "Holiday Favorites" },
   { title: "Animation & Family", subtitle: "Stories for everyone", category: "Animation" },
   { title: "Superheroes", subtitle: "Heroes, villains, and big adventures", category: "Superheroes" },
-  { title: "R-Rated Movies", subtitle: "Films rated R", category: "R-Rated" },
   { title: "Featured Films", subtitle: "A selection from the library", category: "Featured" },
   { title: "Explore Movies", subtitle: "The full movie collection", category: "All" }
 ];
 
 const $ = id => document.getElementById(id);
-const featuredMovies = movies.filter(movie => movie.category.includes("Featured"));
+
+const isRatedR = movie =>
+  movie.rating === "R" ||
+  (movie.category || []).includes("R-Rated");
+
+const featuredMovies = movies.filter(movie =>
+  (movie.category || []).includes("Featured")
+);
+
 let featuredIndex = 0;
-let currentMovie = featuredMovies[0] || movies[0];
+let currentMovie =
+  featuredMovies.find(movie => movie.title === "Interstellar") ||
+  featuredMovies[0] ||
+  movies[0];
 
-/*
-  CUSTOM POSTER URL SUPPORT
-
-  Paste any direct image URL into customPoster for a movie.
-
-  Example:
-  customPoster: "https://example.com/poster.jpg"
-
-  A direct image URL is required. A link to an IMDb movie page
-  or another webpage is not itself an image URL.
-
-  BACKDROP SUPPORT
-
-  The backdrop field accepts either:
-    - a TMDB path:  "/xJHokMbljvjADYdit5fK5VQsXEG.jpg"
-    - a full URL:   "https://example.com/wide-image.jpg"
-  Use a wide (16:9) landscape image for best results.
-*/
 function posterURL(movie) {
   const customURL = (movie.customPoster || "").trim();
 
-  if (customURL) {
-    return customURL;
-  }
+  if (customURL) return customURL;
 
-  return movie.poster
-    ? TMDB + "w500" + movie.poster
-    : "";
+  return movie.poster ? TMDB + "w500" + movie.poster : "";
 }
 
 function backdropURL(movie) {
-  const b = (movie.backdrop || "").trim();
-  if (/^https?:\/\//i.test(b)) return b;   // full URL, use as is
-  if (b) return TMDB + "w1280" + b;        // TMDB path
-  return posterURL(movie);                 // fallback to poster
+  const backdrop = (movie.backdrop || "").trim();
+
+  if (/^https?:\/\//i.test(backdrop)) return backdrop;
+  if (backdrop) return TMDB + "w1280" + backdrop;
+
+  return posterURL(movie);
 }
 
 function setText(id, value) {
@@ -1101,13 +1211,6 @@ function createCard(movie) {
 
   const imageURL = posterURL(movie);
 
-  if (movie.rating === "R" || (movie.category || []).includes("R-Rated")) {
-    const badge = document.createElement("span");
-    badge.className = "rating-badge";
-    badge.textContent = "R RATED";
-    wrap.appendChild(badge);
-  }
-
   if (imageURL) {
     const image = document.createElement("img");
     image.className = "poster";
@@ -1132,9 +1235,14 @@ function createCard(movie) {
 
   const year = document.createElement("div");
   year.className = "movie-year";
-  year.textContent = movie.year;
+  year.textContent = `${movie.year}${isRatedR(movie) ? " · R" : ""}`;
+
+  if (isRatedR(movie)) {
+    year.classList.add("rated-r");
+  }
 
   card.append(wrap, title, year);
+
   card.addEventListener("click", () => openMovie(movie));
 
   card.addEventListener("keydown", event => {
@@ -1159,6 +1267,7 @@ function renderCollections() {
     heading.className = "section-head";
 
     const headingContent = document.createElement("div");
+
     const title = document.createElement("h2");
     title.textContent = collection.title;
 
@@ -1174,9 +1283,9 @@ function renderCollections() {
 
     const list = collection.category === "All"
       ? [...movies].sort((a, b) => a.title.localeCompare(b.title))
-      : collection.category === "R-Rated"
-        ? movies.filter(movie => movie.rating === "R" || (movie.category || []).includes("R-Rated"))
-        : movies.filter(movie => movie.category.includes(collection.category));
+      : movies.filter(movie =>
+          (movie.category || []).includes(collection.category)
+        );
 
     list.forEach(movie => row.appendChild(createCard(movie)));
 
@@ -1193,45 +1302,85 @@ function renderCollections() {
 }
 
 function setHero(movie) {
+  if (!movie) return;
+
   currentMovie = movie;
+
   setText("heroTitle", movie.title);
-  setText("heroMeta", `${movie.year} · ${movie.category[0] || "Movie"}${movie.rating === "R" || (movie.category || []).includes("R-Rated") ? " · R RATED" : movie.rating ? " · " + movie.rating : ""}`);
-  setText("heroDescription", movie.story || "Open the movie details to learn more.");
+
+  const genre =
+    (movie.category || []).find(category =>
+      category !== "Featured" && category !== "R-Rated"
+    ) || "Movie";
+
+  const rating = isRatedR(movie)
+    ? "R"
+    : movie.rating || "";
+
+  setText(
+    "heroMeta",
+    `${movie.year} · ${genre}${rating ? " · " + rating : ""}`
+  );
+
+  setText(
+    "heroDescription",
+    movie.story || "Open the movie details to learn more."
+  );
 
   const backdrop = $("heroBackdrop");
   const url = backdropURL(movie);
-  const fallbackUrl = posterURL(movie);
+  const fallbackURL = posterURL(movie);
 
   backdrop.onerror = null;
   backdrop.referrerPolicy = "no-referrer";
 
-  if (url) {
-    backdrop.style.display = "block";
-
-    backdrop.onerror = () => {
-      // If the backdrop fails to load, try the poster once, then hide.
-      if (fallbackUrl && backdrop.src !== fallbackUrl) {
-        backdrop.onerror = () => { backdrop.style.display = "none"; };
-        backdrop.src = fallbackUrl;
-      } else {
-        backdrop.style.display = "none";
-      }
-    };
-
-    backdrop.src = url;
-  } else {
+  if (!url) {
     backdrop.removeAttribute("src");
     backdrop.style.display = "none";
+    return;
   }
+
+  backdrop.style.display = "block";
+
+  backdrop.onerror = () => {
+    if (fallbackURL && backdrop.src !== fallbackURL) {
+      backdrop.onerror = () => {
+        backdrop.style.display = "none";
+      };
+      backdrop.src = fallbackURL;
+    } else {
+      backdrop.style.display = "none";
+    }
+  };
+
+  backdrop.src = url;
 }
 
 function openMovie(movie) {
   currentMovie = movie;
 
   setText("detailTitle", movie.title);
-  setText("detailMeta", `${movie.year} · ${movie.category.filter(c => c !== "R-Rated").join(" · ")}${movie.rating === "R" || (movie.category || []).includes("R-Rated") ? " · R RATED" : movie.rating ? " · " + movie.rating : ""}`);
-  setText("detailStory", movie.story || "Story details have not been added yet.");
-  setText("detailCast", movie.cast || "Cast details have not been added yet.");
+
+  const categories = (movie.category || []).filter(category =>
+    category !== "R-Rated" && category !== "Featured"
+  );
+
+  const rating = isRatedR(movie) ? "R" : movie.rating || "";
+
+  setText(
+    "detailMeta",
+    `${movie.year} · ${categories.join(" · ")}${rating ? " · " + rating : ""}`
+  );
+
+  setText(
+    "detailStory",
+    movie.story || "Story details have not been added yet."
+  );
+
+  setText(
+    "detailCast",
+    movie.cast || "Cast details have not been added yet."
+  );
 
   const poster = $("detailPoster");
   poster.onerror = null;
@@ -1240,7 +1389,9 @@ function openMovie(movie) {
 
   if (imageURL) {
     poster.src = imageURL;
+    poster.alt = `${movie.title} poster`;
     poster.style.display = "block";
+
     poster.onerror = () => {
       poster.removeAttribute("src");
       poster.style.display = "none";
@@ -1264,28 +1415,37 @@ function openMovie(movie) {
 
   if (driveMatch) {
     const iframe = document.createElement("iframe");
-    iframe.src = `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+
+    iframe.src =
+      `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+
     iframe.title = `${movie.title} video player`;
-    iframe.allow = "autoplay; encrypted-media; fullscreen; picture-in-picture";
+    iframe.allow =
+      "autoplay; encrypted-media; fullscreen; picture-in-picture";
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
     stage.appendChild(iframe);
 
-    message.textContent = "If playback doesn't load, check the video's sharing settings.";
+    message.textContent =
+      "If playback doesn't load, check the video's sharing settings.";
   } else if (
     /^https?:\/\//i.test(driveURL) &&
     /\.(mp4|webm|ogg)(\?.*)?$/i.test(driveURL)
   ) {
     const video = document.createElement("video");
+
     video.src = driveURL;
     video.controls = true;
     video.autoplay = false;
     video.playsInline = true;
     video.preload = "metadata";
     video.id = "nativeVideo";
+
     stage.appendChild(video);
   } else {
-    message.textContent = "No playable video is configured for this title yet.";
+    message.textContent =
+      "No playable video is configured for this title yet.";
   }
 
   stage.appendChild(message);
@@ -1298,7 +1458,8 @@ function openMovie(movie) {
     });
 
     nativeVideo.addEventListener("error", () => {
-      message.textContent = "This video could not be loaded. Check the URL and permissions.";
+      message.textContent =
+        "This video could not be loaded. Check the URL and permissions.";
       message.classList.remove("hidden");
     });
   } else if (driveMatch) {
@@ -1349,42 +1510,65 @@ $("pipButton").addEventListener("click", async () => {
 });
 
 $("heroPlay").addEventListener("click", () => openMovie(currentMovie));
-$("heroInfo").addEventListener("click", () => openMovie(currentMovie));
+
 $("nextFeatured").addEventListener("click", () => {
   if (!featuredMovies.length) return;
-  featuredIndex = (featuredIndex + 1) % featuredMovies.length;
+
+  featuredIndex =
+    (featuredIndex + 1) % featuredMovies.length;
+
   setHero(featuredMovies[featuredIndex]);
 });
+
 $("closePlayer").addEventListener("click", closePlayer);
 
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closePlayer();
+$("playerOverlay").addEventListener("click", event => {
+  if (event.target === $("playerOverlay")) {
+    closePlayer();
+  }
 });
 
-$("search").addEventListener("input", () => {
-  const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+/* ---------- Search ---------- */
+
+const normalize = value =>
+  String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+function renderSearchResults() {
   const query = normalize($("search").value);
   const terms = query.split(/\s+/).filter(Boolean);
-  const resultsSection = $("searchResults");
   const resultsRow = $("resultRow");
 
   resultsRow.replaceChildren();
 
-  if (!query) {
-    resultsSection.hidden = true;
-    $("collections").style.display = "";
-    return;
-  }
-
-  $("collections").style.display = "none";
-  resultsSection.hidden = false;
-
   const results = movies.filter(movie => {
-    const searchable = normalize([movie.title, movie.year, movie.story, movie.cast, movie.rating, ...(movie.category || [])].join(" "));
+    if (!terms.length) return true;
+
+    const searchable = normalize([
+      movie.title,
+      movie.year,
+      movie.story,
+      movie.cast,
+      movie.rating,
+      ...(movie.category || [])
+    ].join(" "));
+
     return terms.every(term => searchable.includes(term));
   }).sort((a, b) => {
-    const aa = normalize(a.title), bb = normalize(b.title);
-    return (aa === query ? -2 : aa.startsWith(query) ? -1 : 0) - (bb === query ? -2 : bb.startsWith(query) ? -1 : 0) || aa.localeCompare(bb);
+    const aa = normalize(a.title);
+    const bb = normalize(b.title);
+
+    const scoreA =
+      query && aa === query ? -2 : query && aa.startsWith(query) ? -1 : 0;
+
+    const scoreB =
+      query && bb === query ? -2 : query && bb.startsWith(query) ? -1 : 0;
+
+    return scoreA - scoreB || aa.localeCompare(bb);
   });
 
   setText(
@@ -1395,12 +1579,72 @@ $("search").addEventListener("input", () => {
   if (!results.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
+    empty.style.gridColumn = "1 / -1";
     empty.textContent = "No movies found. Try another search.";
     resultsRow.appendChild(empty);
     return;
   }
 
-  results.forEach(movie => resultsRow.appendChild(createCard(movie)));
+  results.forEach(movie =>
+    resultsRow.appendChild(createCard(movie))
+  );
+}
+
+function openSearch() {
+  const overlay = $("searchOverlay");
+
+  if (!overlay.classList.contains("open")) {
+    overlay.style.top = document.querySelector("header").offsetHeight + "px";
+    renderSearchResults();
+    overlay.scrollTop = 0;
+    overlay.classList.add("open");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("searching");
+  }
+}
+
+function closeSearch() {
+  const overlay = $("searchOverlay");
+
+  overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("searching");
+
+  $("search").value = "";
+  $("search").blur();
+}
+
+$("search").addEventListener("focus", openSearch);
+$("search").addEventListener("click", openSearch);
+$("search").addEventListener("input", () => {
+  openSearch();
+  renderSearchResults();
+});
+
+// Click on empty space in the overlay closes search
+$("searchOverlay").addEventListener("click", event => {
+  if (
+    event.target === $("searchOverlay") ||
+    event.target.classList.contains("search-inner") ||
+    event.target.classList.contains("search-grid")
+  ) {
+    closeSearch();
+  }
+});
+
+// Clicking the logo closes search too
+document.querySelector(".logo").addEventListener("click", () => {
+  if (document.body.classList.contains("searching")) closeSearch();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key !== "Escape") return;
+
+  if ($("playerOverlay").classList.contains("open")) {
+    closePlayer();
+  } else if (document.body.classList.contains("searching")) {
+    closeSearch();
+  }
 });
 
 renderCollections();
