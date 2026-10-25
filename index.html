@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -266,6 +265,34 @@ main {
   border-radius: 4px;
   border: 1px solid #282828;
   background: #181818;
+}
+
+.rating-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 4px 6px;
+  border: 1px solid #ff6b6b;
+  border-radius: 3px;
+  background: #260c0c;
+  color: #ffb1b1;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+.movie-rating {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 3px 5px;
+  border: 1px solid #633333;
+  border-radius: 3px;
+  color: #ffb1b1;
+  font-size: 10px;
+  font-weight: 700;
+  vertical-align: 1px;
 }
 
 .poster {
@@ -570,6 +597,7 @@ footer {
       <div class="hero-actions">
         <button class="primary-btn" id="heroPlay">▶ Play</button>
         <button class="secondary-btn" id="heroInfo">More info</button>
+        <button class="secondary-btn" id="nextFeatured">Next featured</button>
       </div>
     </div>
   </section>
@@ -631,9 +659,10 @@ const movies = [
     year: 2026,
     poster: "",
     customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkqVc52eej74emXxh0Z1IYzAPHSvkyrs_nROQQZdyQoNcJIBrEEnetW0HCRocnYR7GJyHRw&s=10",
-    backdrop: "",
-    category: ["Superheroes", "Featured"],
-    story: "Peter Parker faces a new chapter as Spider-Man. Add a verified synopsis when official plot details are available.",
+    backdrop: "https://static0.colliderimages.com/wordpress/wp-content/uploads/2026/03/spider-man-brand-new-day-tom-holland-2.jpg",
+    category: ['Superheroes', 'Featured', 'Marvel'],
+    rating: 'Not Rated',
+    story: 'Peter Parker faces a new chapter as Spider-Man, fighting crime in a world that no longer remembers his identity.',
     cast: "Tom Holland, Zendaya, Jacob Batalon",
     drive: "https://drive.google.com/file/d/1cBtLxO4XbS7exzq05I4E1fA8IF8cBKT0/view"
   },
@@ -664,8 +693,8 @@ const movies = [
     year: 2026,
     poster: "",
     customPoster: "https://m.media-amazon.com/images/M/MV5BNTcyNmJlZmQtNDUwYy00NDBjLTg1NGQtYTY2Y2UxMWM3NmI1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    backdrop: "",
-    category: ["Adventure", "Featured"],
+    backdrop: "https://a.ltrbxd.com/resized/sm/upload/vn/7k/d6/d7/odyssey-1200-1200-675-675-crop-000000.jpg?v=9f3eb79026",
+    category: ['Adventure', 'Featured'],
     story: "An epic adaptation of Homer's ancient tale follows Odysseus on his long and dangerous journey home after the Trojan War.",
     cast: "Matt Damon, Anne Hathaway, Tom Holland, Zendaya",
     drive: "https://drive.google.com/file/d/1ZWEQ9sefcNmwWKRlzCgx96gNzMSpI2iQ/view"
@@ -709,7 +738,7 @@ const movies = [
     poster: "/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg",
     customPoster: "",
     backdrop: "/m8JTwHFwX7I7JY5fPe4SjqejWag.jpg",
-    category: ["Superheroes", "Marvel"],
+    category: ['Superheroes', 'Marvel'],
     story: "Scott Lang and his family explore the Quantum Realm and encounter a powerful new threat.",
     cast: "Paul Rudd, Evangeline Lilly, Jonathan Majors, Kathryn Newton",
     drive: "https://drive.google.com/file/d/1AW3Zm8256tzZ-37lmgYmIGse4knu8IdA/view"
@@ -719,8 +748,8 @@ const movies = [
     year: 2019,
     poster: "/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
     customPoster: "",
-    backdrop: "",
-    category: ["Avengers", "Superheroes", "Marvel"],
+    backdrop: "https://d23.com/app/uploads/2019/08/1180w-600h_081319_avengers-endgame-facts.jpg",
+    category: ['Avengers', 'Superheroes', 'Marvel', 'Featured'],
     story: "The surviving Avengers work together to reverse the devastating consequences of Thanos's actions.",
     cast: "Robert Downey Jr., Chris Evans, Mark Ruffalo, Scarlett Johansson, Chris Hemsworth",
     drive: "https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view"
@@ -731,7 +760,7 @@ const movies = [
     poster: "/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
     customPoster: "",
     backdrop: "",
-    category: ["Avengers", "Superheroes", "Marvel"],
+    category: ['Avengers', 'Superheroes', 'Marvel'],
     story: "The Avengers and their allies face a race against time to stop Thanos from collecting the Infinity Stones.",
     cast: "Robert Downey Jr., Chris Hemsworth, Mark Ruffalo, Chris Evans, Josh Brolin",
     drive: "https://drive.google.com/file/d/1zpl7Dngm7ESW_yLZvcQMm9AhmR1izyus/view"
@@ -742,7 +771,7 @@ const movies = [
     poster: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     customPoster: "",
     backdrop: "/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
-    category: ["Science Fiction", "Featured"],
+    category: ['Science Fiction', 'Featured'],
     story: "A team of explorers travels beyond this galaxy to discover whether mankind has a future among the stars.",
     cast: "Matthew McConaughey, Anne Hathaway, Jessica Chastain, Michael Caine",
     drive: "https://drive.google.com/file/d/1rjx6-12dB11LWwj5jFEFX2QMuZiEVUFk/view"
@@ -752,8 +781,8 @@ const movies = [
     year: 2014,
     poster: "/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
     customPoster: "",
-    backdrop: "/6bbZ6XyvgfjhQwbplnUh1LSj1ky.jpg",
-    category: ["Drama", "Featured"],
+    backdrop: "https://media.newyorker.com/photos/59097ccac14b3c606c109711/16:9/w_1280,c_limit/Brody-Whiplash.jpg",
+    category: ['Drama', 'Featured'],
     story: "A determined young drummer enters a demanding music conservatory, where an uncompromising instructor pushes him to his limits.",
     cast: "Miles Teller, J.K. Simmons, Paul Reiser, Melissa Benoist",
     drive: "https://drive.google.com/file/d/1NsMv5rGihaprmvDovnW4RT7_R15G8GE7/view"
@@ -809,6 +838,7 @@ const movies = [
   customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJq8JhbePd_K1RbQU9uWEAHyO3d1BxFdjytmWhXS6jn0EjNaxmcO0ls1Kul1bFqEpfNzuB&s=10",
   backdrop: "",
   category: ["Thriller", "Crime", "R-Rated"],
+    rating: 'R',
   story: "A wealthy New York investment banker maintains a polished public image while concealing a disturbing and increasingly unstable private life.",
   cast: "Christian Bale, Willem Dafoe, Jared Leto, Reese Witherspoon, Justin Theroux",
   drive: "https://drive.google.com/file/d/1XLbBFM6yQ48V1yXIfrenbhpMyZeUryV7/view"
@@ -820,6 +850,7 @@ const movies = [
   customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc0Why8ZAWt5neAxs9vuy21DiVTKVoP7A3j_l2nDxpxNtHm20wuQPzi9njk9yVGYch9Uvd&s=10",
   backdrop: "",
   category: ["Sci-Fi", "Horror", "R-Rated"],
+    rating: 'R',
   story: "A group of young space colonists scavenging an abandoned space station encounter a terrifying extraterrestrial threat.",
   cast: "Cailee Spaeny, David Jonsson, Archie Renaux, Isabela Merced, Spike Fearn, Aileen Wu",
   drive: "https://drive.google.com/file/d/122SQiB6invgpsu7KpWiYbix5KPUW2WN4/view"
@@ -863,7 +894,8 @@ const movies = [
   poster: "",
   customPoster: "https://static.dc.com/2023-07/Movies_Thumb_BlueBeetle_Txtd_Main_1sht_REV_BLBTL.jpg",
   backdrop: "",
-  category: ["Action", "Sci-Fi"],
+    category: ['Action', 'Sci-Fi', 'Superheroes', 'DC'],
+    rating: 'PG-13',
   story: "Recent college graduate Jaime Reyes returns home and discovers that an ancient alien scarab has chosen him as its host, granting him a powerful armored suit.",
   cast: "Xolo Maridueña, Adriana Barraza, Damián Alcázar, Raoul Max Trujillo, Susan Sarandon, George Lopez",
   drive: "https://drive.google.com/file/d/1T2XMXtDAlohPcGdi-u2p9zXF9Os9zkY1/view?t=0.155"
@@ -873,9 +905,10 @@ const movies = [
   year: 1989,
   poster: "",
   customPoster: "https://static.wikia.nocookie.net/batman/images/1/1c/Batman_teaser.jpg/revision/latest?cb=20151021190201",
-  backdrop: "",
-  category: ["Action", "Superhero"],
-  story: "",
+  backdrop: "https://static.wikia.nocookie.net/batman/images/b/be/1989_WB_Batsignal.png/revision/latest?cb=20171119175305",
+    category: ['Action', 'Superhero', 'Superheroes', 'Featured'],
+    rating: 'PG-13',
+  story: 'Gotham City’s masked vigilante Batman confronts the Joker, a criminal whose campaign of chaos threatens the city, while reporter Vicki Vale investigates the mystery surrounding them.',
   cast: "Michael Keaton, Jack Nicholson, Kim Basinger",
   drive: "https://drive.google.com/file/d/1P8z8U0j5UHxqTq0taTj18TgG6nZwSKYd/view"
 },
@@ -885,8 +918,9 @@ const movies = [
   poster: "",
   customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR67F3tPnZHljaZ1MSTKI65EUuR5JsWnBcfe1vtOfBLmpA6rfgnvNeUqdk7een2OCUZVdrm3w&s=10",
   backdrop: "",
-  category: ["Action", "Superhero"],
-  story: "",
+    category: ['Action', 'Superhero', 'Superheroes'],
+    rating: 'PG-13',
+  story: 'Batman faces the Penguin, a mysterious outcast seeking power in Gotham, while Catwoman pursues her own path and becomes entangled in their conflict.',
   cast: "Michael Keaton, Danny DeVito, Michelle Pfeiffer",
   drive: "https://drive.google.com/file/d/1aeYtz38ljtxCCtuVs4x0zuUh2TWKf-K6/view"
 },
@@ -896,8 +930,9 @@ const movies = [
   poster: "",
   customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTouUffs0WxuLY6R01M-pjsJXyum55GqxyqXh3aHXjg4VUG4BI1b6xIq2o&s=10",
   backdrop: "",
-  category: ["Action", "Crime"],
-  story: "",
+    category: ['Action', 'Crime', 'Superheroes'],
+    rating: 'PG-13',
+  story: 'Bruce Wayne returns to Gotham after years away and trains to become Batman, determined to fight corruption and stop a conspiracy threatening the city.',
   cast: "Christian Bale, Michael Caine, Liam Neeson",
   drive: "https://drive.google.com/file/d/1ZegfkrD50sGDUVJ-4d9IiBpR0MTmdphx/view"
 },
@@ -907,8 +942,9 @@ const movies = [
   poster: "",
   customPoster: "https://i0.wp.com/dailycampus.com/wp-content/uploads/2021/03/330px-The_dark_knight.jpg?resize=399%2C598&ssl=1",
   backdrop: "",
-  category: ["Action", "Crime"],
-  story: "",
+    category: ['Action', 'Crime', 'Superheroes'],
+    rating: 'PG-13',
+  story: 'Batman, Lieutenant James Gordon, and District Attorney Harvey Dent work to dismantle Gotham’s criminal networks, but the Joker pushes the city into a crisis that tests their principles.',
   cast: "Christian Bale, Heath Ledger, Aaron Eckhart",
   drive: "https://drive.google.com/file/d/1CZvw1MgSLVQR9Z9L8qpl8j1oI7DnMDWr/view"
 },
@@ -917,11 +953,72 @@ const movies = [
   year: 2022,
   poster: "",
   customPoster: "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/130/2021/12/02163447/pOaKyhMwALpCTg07eQQu0SQCbL9-scaled.jpg",
-  backdrop: "",
-  category: ["Action", "Crime"],
-  story: "",
+  backdrop: "https://occ-0-2219-2218.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABRZGKb0WLE_o_W8uv5JFk7IO3NXuPlTCuWJs9lpDeq1cctUSf9dvwFJZMS4stKawVIqkfEqMZlWdTkmoOCTrtk2Hxf6SzXz2LhOx.jpg?r=55f",
+    category: ['Action', 'Crime', 'Superheroes', 'Featured'],
+    rating: 'PG-13',
+  story: 'In his second year as Gotham’s vigilante, Batman investigates a series of murders that expose corruption across the city and bring him into conflict with the Riddler and Catwoman.',
   cast: "Robert Pattinson, Zoë Kravitz, Paul Dano",
   drive: "https://drive.google.com/file/d/16si_yvGyZn5mgvNIHil5xXOR3I8RaTKb/view"
+},
+{
+  title: "Black Panther",
+  year: 2018,
+  poster: "",
+  customPoster: "https://lumiere-a.akamaihd.net/v1/images/p_blackpanther_19754_4ac13f07.jpeg?region=0%2C0%2C540%2C810",
+  backdrop: "https://static0.cbrimages.com/wordpress/wp-content/uploads/2022/09/Wakanda-Forever-landscape.jpg?w=1600&h=900&fit=crop",
+    category: ['Action', 'Superhero', 'Superheroes', 'Marvel', 'Featured'],
+    rating: 'PG-13',
+  story: 'After becoming king of Wakanda, T’Challa must defend his nation and decide how it should use its advanced technology when a powerful challenger emerges.',
+  cast: "Chadwick Boseman, Michael B. Jordan, Lupita Nyong'o",
+  drive: "https://drive.google.com/file/d/1wdUOiz7tI3R5vTz779h7CesAW5h0kUh1/view"
+},
+{
+  title: "Black Panther: Wakanda Forever",
+  year: 2022,
+  poster: "",
+  customPoster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Black_Panther_Wakanda_Forever_poster.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+  backdrop: "",
+    category: ['Action', 'Superhero', 'Superheroes', 'Marvel'],
+    rating: 'PG-13',
+  story: 'As Wakanda mourns King T’Challa, Shuri, Queen Ramonda, and their allies face outside pressure and a conflict with Talokan, an underwater nation led by Namor.',
+  cast: "Letitia Wright, Angela Bassett, Tenoch Huerta",
+  drive: "https://drive.google.com/file/d/198qUcefIK54KnZzxAx6_L8u7l37oCfhK/view"
+},
+{
+  title: "Barbie",
+  year: 2023,
+  poster: "",
+  customPoster: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p13472534_p_v8_am.jpg",
+  backdrop: "",
+  category: ["Comedy", "Fantasy"],
+    rating: 'PG-13',
+  story: 'Barbie’s seemingly perfect life in Barbieland changes when she begins experiencing unexpected thoughts and travels to the human world with Ken, discovering that real life is more complicated than their fantasy home.',
+  cast: "Margot Robbie, Ryan Gosling, America Ferrera",
+  drive: "https://drive.google.com/file/d/1K88LvZ6q9KRwsdiVQ72Wrh5DQqWVLkd3/view"
+},
+{
+  title: "Backrooms",
+  year: 2022,
+  poster: "",
+  customPoster: "https://upload.wikimedia.org/wikipedia/en/3/3d/Backrooms_%28film%29_poster.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+  backdrop: "",
+  category: ["Horror", "Mystery"],
+    rating: 'Not Rated',
+  story: 'A strange doorway leads into an endless maze of fluorescent-lit rooms, where the familiar world gives way to an unsettling place governed by unknown rules.',
+    cast: 'Chiwetel Ejiofor, Renate Reinsve, Mark Duplass, Finn Bennett, Lukita Maxwell',
+  drive: "https://drive.google.com/file/d/1iEETRhLjAGSlkyRAx4SMYgBaklHL1cob/view?t=0.148"
+},
+{
+  title: "Black Adam",
+  year: 2022,
+  poster: "",
+  customPoster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc47Uom4yrMMZXhUrQNZuHmeFSzsFsvFVjABDVkg3blRe342wOd0OsfUru&s=10",
+  backdrop: "https://deadline.com/wp-content/uploads/2022/10/MCDBLAD_WB003.jpg",
+    category: ['Action', 'Superhero', 'Superheroes', 'DC', 'Featured'],
+    rating: 'PG-13',
+  story: 'After nearly five thousand years imprisoned, Teth-Adam is released into the modern world and uses immense powers according to his own harsh sense of justice, bringing him into conflict with the Justice Society.',
+  cast: "Dwayne Johnson, Aldis Hodge, Pierce Brosnan",
+  drive: "https://drive.google.com/file/d/1zs2JXhwwFB8QXgigGkRWD-v98bHXdjJM/view"
 }
 ];
 
@@ -930,12 +1027,15 @@ const collections = [
   { title: "Holiday Favorites", subtitle: "Movies for the holiday season", category: "Holiday Favorites" },
   { title: "Animation & Family", subtitle: "Stories for everyone", category: "Animation" },
   { title: "Superheroes", subtitle: "Heroes, villains, and big adventures", category: "Superheroes" },
+  { title: "R-Rated Movies", subtitle: "Films rated R", category: "R-Rated" },
   { title: "Featured Films", subtitle: "A selection from the library", category: "Featured" },
   { title: "Explore Movies", subtitle: "The full movie collection", category: "All" }
 ];
 
 const $ = id => document.getElementById(id);
-let currentMovie = movies.find(movie => movie.title === "Interstellar") || movies[0];
+const featuredMovies = movies.filter(movie => movie.category.includes("Featured"));
+let featuredIndex = 0;
+let currentMovie = featuredMovies[0] || movies[0];
 
 /*
   CUSTOM POSTER URL SUPPORT
@@ -947,6 +1047,13 @@ let currentMovie = movies.find(movie => movie.title === "Interstellar") || movie
 
   A direct image URL is required. A link to an IMDb movie page
   or another webpage is not itself an image URL.
+
+  BACKDROP SUPPORT
+
+  The backdrop field accepts either:
+    - a TMDB path:  "/xJHokMbljvjADYdit5fK5VQsXEG.jpg"
+    - a full URL:   "https://example.com/wide-image.jpg"
+  Use a wide (16:9) landscape image for best results.
 */
 function posterURL(movie) {
   const customURL = (movie.customPoster || "").trim();
@@ -961,9 +1068,10 @@ function posterURL(movie) {
 }
 
 function backdropURL(movie) {
-  return movie.backdrop
-    ? TMDB + "w1280" + movie.backdrop
-    : posterURL(movie);
+  const b = (movie.backdrop || "").trim();
+  if (/^https?:\/\//i.test(b)) return b;   // full URL, use as is
+  if (b) return TMDB + "w1280" + b;        // TMDB path
+  return posterURL(movie);                 // fallback to poster
 }
 
 function setText(id, value) {
@@ -990,6 +1098,13 @@ function createCard(movie) {
   wrap.className = "poster-wrap";
 
   const imageURL = posterURL(movie);
+
+  if (movie.rating === "R" || (movie.category || []).includes("R-Rated")) {
+    const badge = document.createElement("span");
+    badge.className = "rating-badge";
+    badge.textContent = "R RATED";
+    wrap.appendChild(badge);
+  }
 
   if (imageURL) {
     const image = document.createElement("img");
@@ -1057,7 +1172,9 @@ function renderCollections() {
 
     const list = collection.category === "All"
       ? [...movies].sort((a, b) => a.title.localeCompare(b.title))
-      : movies.filter(movie => movie.category.includes(collection.category));
+      : collection.category === "R-Rated"
+        ? movies.filter(movie => movie.rating === "R" || (movie.category || []).includes("R-Rated"))
+        : movies.filter(movie => movie.category.includes(collection.category));
 
     list.forEach(movie => row.appendChild(createCard(movie)));
 
@@ -1076,20 +1193,30 @@ function renderCollections() {
 function setHero(movie) {
   currentMovie = movie;
   setText("heroTitle", movie.title);
-  setText("heroMeta", `${movie.year} · ${movie.category[0] || "Movie"}`);
-  setText("heroDescription", movie.story);
+  setText("heroMeta", `${movie.year} · ${movie.category[0] || "Movie"}${movie.rating === "R" || (movie.category || []).includes("R-Rated") ? " · R RATED" : movie.rating ? " · " + movie.rating : ""}`);
+  setText("heroDescription", movie.story || "Open the movie details to learn more.");
 
   const backdrop = $("heroBackdrop");
   const url = backdropURL(movie);
+  const fallbackUrl = posterURL(movie);
 
   backdrop.onerror = null;
+  backdrop.referrerPolicy = "no-referrer";
 
   if (url) {
-    backdrop.src = url;
     backdrop.style.display = "block";
+
     backdrop.onerror = () => {
-      backdrop.style.display = "none";
+      // If the backdrop fails to load, try the poster once, then hide.
+      if (fallbackUrl && backdrop.src !== fallbackUrl) {
+        backdrop.onerror = () => { backdrop.style.display = "none"; };
+        backdrop.src = fallbackUrl;
+      } else {
+        backdrop.style.display = "none";
+      }
     };
+
+    backdrop.src = url;
   } else {
     backdrop.removeAttribute("src");
     backdrop.style.display = "none";
@@ -1100,9 +1227,9 @@ function openMovie(movie) {
   currentMovie = movie;
 
   setText("detailTitle", movie.title);
-  setText("detailMeta", `${movie.year} · ${movie.category.join(" · ")}`);
-  setText("detailStory", movie.story);
-  setText("detailCast", movie.cast);
+  setText("detailMeta", `${movie.year} · ${movie.category.filter(c => c !== "R-Rated").join(" · ")}${movie.rating === "R" || (movie.category || []).includes("R-Rated") ? " · R RATED" : movie.rating ? " · " + movie.rating : ""}`);
+  setText("detailStory", movie.story || "Story details have not been added yet.");
+  setText("detailCast", movie.cast || "Cast details have not been added yet.");
 
   const poster = $("detailPoster");
   poster.onerror = null;
@@ -1221,6 +1348,11 @@ $("pipButton").addEventListener("click", async () => {
 
 $("heroPlay").addEventListener("click", () => openMovie(currentMovie));
 $("heroInfo").addEventListener("click", () => openMovie(currentMovie));
+$("nextFeatured").addEventListener("click", () => {
+  if (!featuredMovies.length) return;
+  featuredIndex = (featuredIndex + 1) % featuredMovies.length;
+  setHero(featuredMovies[featuredIndex]);
+});
 $("closePlayer").addEventListener("click", closePlayer);
 
 document.addEventListener("keydown", event => {
@@ -1228,7 +1360,9 @@ document.addEventListener("keydown", event => {
 });
 
 $("search").addEventListener("input", () => {
-  const query = $("search").value.trim().toLowerCase();
+  const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const query = normalize($("search").value);
+  const terms = query.split(/\s+/).filter(Boolean);
   const resultsSection = $("searchResults");
   const resultsRow = $("resultRow");
 
@@ -1243,11 +1377,13 @@ $("search").addEventListener("input", () => {
   $("collections").style.display = "none";
   resultsSection.hidden = false;
 
-  const results = movies.filter(movie =>
-    movie.title.toLowerCase().includes(query) ||
-    movie.category.some(category => category.toLowerCase().includes(query)) ||
-    movie.cast.toLowerCase().includes(query)
-  );
+  const results = movies.filter(movie => {
+    const searchable = normalize([movie.title, movie.year, movie.story, movie.cast, movie.rating, ...(movie.category || [])].join(" "));
+    return terms.every(term => searchable.includes(term));
+  }).sort((a, b) => {
+    const aa = normalize(a.title), bb = normalize(b.title);
+    return (aa === query ? -2 : aa.startsWith(query) ? -1 : 0) - (bb === query ? -2 : bb.startsWith(query) ? -1 : 0) || aa.localeCompare(bb);
+  });
 
   setText(
     "resultCount",
